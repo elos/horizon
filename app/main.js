@@ -9,9 +9,9 @@
     // --- }}}
 
     // --- Configure App {{{
-    var app = angular.module('angularSeedApp', ['ngRoute', 'ngAnimate']);
+    var app = angular.module('angularSeedApp', [ 'ngRoute', 'ngAnimate' ]);
 
-    app.config(['$locationProvider', '$routeProvider', '$httpProvider',
+    app.config([ '$locationProvider', '$routeProvider', '$httpProvider',
         function($locationProvider, $routeProvider, $httpProvider) {
             $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
@@ -20,13 +20,13 @@
             var encodeData = require('../assets/js/requests/encode_form_data');
 
             // 'Fix' angular's form data encoding
-            $httpProvider.defaults.transformRequest = [function(data) {
+            $httpProvider.defaults.transformRequest = [ function(data) {
                 if (angular.isObject(data) && String(data) !== '[object File]') {
                     return encodeData(data);
                 } else {
                     return data;
                 }
-            }];
+            } ];
 
             // Configure Routing
             $routeProvider
@@ -37,7 +37,7 @@
                 .otherwise({
                     redirectTo: '/'
                 });
-    }]);
+    } ]);
     // --- }}}
 
   // --- Configure Controllers {{{

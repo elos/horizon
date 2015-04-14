@@ -5,7 +5,7 @@ module.exports = (function() {
 
     };
 
-    HomeController.$inject = ['$scope', '$location'];
+    HomeController.$inject = [ '$scope', '$location' ];
 
     return HomeController;
 }());
