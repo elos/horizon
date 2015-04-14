@@ -1,0 +1,13 @@
+// Import all third party SCSS
+@import '../libs/compass-mixins/lib/compass/css3/transform';
+@import '../libs/compass-mixins/lib/compass/utilities';
+
+// Our global CSS reset
+@include global-reset;
+
+$red: #f00;
+
+.red-centered-text {
+  color: $red;
+  text-align: center;
+}

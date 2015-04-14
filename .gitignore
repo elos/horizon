@@ -1,0 +1,14 @@
+# Ignore operating system generated files
+.DS_Store
+
+# ignore NPM generated files
+node_modules/
+npm-debug.log
+
+# Ignore build files
+build/dist
+
+# Ignore application/workflow related files
+bundled.js
+bundled.css
+assets/libs/
