@@ -24,21 +24,17 @@ Note, OSX users may have to use sudo while installing bundler.
 1. Clone the repository and change into the repository directory
 1. Install ruby gems with `bundle install`
 1. Install the node requirements: `npm install`
-1. Install the Bower components: `bower install`
-1. Run locally: `gulp` or create a build: `gulp build`
+1. Install the Bower components: `./node_modules/.bin/bower install`
+1. Run locally: `./node_modules/.bin/gulp` or create a build: `./node_modules/.bin/gulp build`
 
 Alternatively, you can run:
 
 1. `npm run watch` for development
 1. `npm run build` for a production build
 
-The npm alternatives don't require modifying your PATH variable to find
-the local executables.
-
 ## NPM Notes
 
-These notes only apply if you use `gulp` or `gulp build` and not the npm
-alternative commands.
+These notes only apply if you use `gulp` or `bower`.
 
 It's easier to use local node modules if you append it to your PATH:
 
