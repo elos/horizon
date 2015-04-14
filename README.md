@@ -46,7 +46,7 @@ source ~/.bashrc
 ```
 
 Then you can use all node modules local to the repository without prepending
-the long file path.
+the long file path or installing `gulp` or `bower` as a global binary.
 
 ## Running Unit Tests
 
