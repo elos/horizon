@@ -11,4 +11,4 @@ dist/
 # Ignore application/workflow related files
 bundled.js
 bundled.css
-assets/libs/
+libs/
