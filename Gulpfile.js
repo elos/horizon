@@ -5,17 +5,17 @@ var gulp = require('gulp');
 // --- Main Tasks {{{
 // Default, run development build and server.
 gulp.task('default',
-    ['clean', 'lint', 'watch', 'compile', 'connect']
+    [ 'clean', 'lint', 'watch', 'compile', 'connect' ]
 );
 
 // Create a production ready build.
 gulp.task('build',
-    ['clean', 'lint', 'compile-dist']
+    [ 'clean', 'lint', 'compile-dist' ]
 );
 
 // Run a test against a clean (linted) build
 gulp.task('test',
-    ['clean', 'lint', 'tests']
+    [ 'clean', 'lint', 'tests' ]
 );
 // --- }}}
 
@@ -25,7 +25,7 @@ gulp.task('lint', function() {
         jscs = require('gulp-jscs');
 
     // Lint all JavaScript and check style
-    gulp.src(['./app/**/*.js', './assets/js/**/*.js'])
+    gulp.src([ './app/**/*.js', './assets/js/**/*.js' ])
         .pipe(jscs())
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
@@ -47,7 +47,7 @@ gulp.task('lint', function() {
         .pipe(htmlhint.failReporter())
 
     gulp.src('./app/**/*.html')
-        .pipe(htmlhint({'doctype-first': false}))
+        .pipe(htmlhint({ 'doctype-first': false }))
         .pipe(htmlhint.failReporter())
 });
 // --- }}}
@@ -56,7 +56,9 @@ gulp.task('lint', function() {
 gulp.task('clean', function() {
     var del = require('del');
 
-    del.sync(['./dist/*', './bundled.js', './bundled.css', '!./dist/.gitkeep']);
+    del.sync([
+        './dist/*', './bundled.js', './bundled.css', '!./dist/.gitkeep'
+    ]);
 });
 // --- }}}
 
@@ -68,7 +70,7 @@ gulp.task('watch', function() {
         './index.html',
         './assets/**/*.js',
         './assets/**/*.scss'
-    ], ['lint', 'compile']);
+    ], [ 'lint', 'compile' ]);
 });
 // --- }}}
 
@@ -76,7 +78,7 @@ gulp.task('watch', function() {
 gulp.task('connect', function() {
     var connect = require('gulp-connect');
 
-    connect.server({port: 8000});
+    connect.server({ port: 8000 });
 });
 // --- }}}
 
@@ -97,7 +99,7 @@ gulp.task('compile', function() {
     var browserify = require('gulp-browserify'),
         concat = require('gulp-concat');
 
-    gulp.src(['app/main.js'])
+    gulp.src([ 'app/main.js' ])
         .pipe(browserify({
             debug: true
         }))
@@ -105,8 +107,8 @@ gulp.task('compile', function() {
         .pipe(gulp.dest('./'))
 
     // Compile and minify SCSS to CSS
-    var sass = require('gulp-sass');
-    var minifyCSS = require('gulp-minify-css');
+    var sass = require('gulp-sass'),
+        minifyCSS = require('gulp-minify-css');
 
     gulp.src('./assets/scss/*.scss')
         .pipe(sass())
@@ -123,7 +125,7 @@ gulp.task('compile-dist', function() {
         stripDebug = require('gulp-strip-debug'),
         uglify = require('gulp-uglify');
 
-    gulp.src(['app/main.js'])
+    gulp.src([ 'app/main.js' ])
         .pipe(browserify({
             debug: false
         }))
@@ -133,8 +135,8 @@ gulp.task('compile-dist', function() {
         .pipe(gulp.dest('./dist/'))
 
     // Compile and minify SCSS to CSS
-    var sass = require('gulp-sass');
-    var minifyCSS = require('gulp-minify-css');
+    var sass = require('gulp-sass'),
+        minifyCSS = require('gulp-minify-css');
 
     gulp.src('./assets/scss/*.scss')
         .pipe(sass())
@@ -151,7 +153,7 @@ gulp.task('compile-dist', function() {
     // Optimize image assets
     var imageop = require('gulp-image-optimization');
 
-    gulp.src(['./assets/img/**/*', '!./assets/img/.gitkeep'])
+    gulp.src([ './assets/img/**/*', '!./assets/img/.gitkeep' ])
         .pipe(imageop({
             optimizationLevel: 5,
             progressive: true,
@@ -168,6 +170,6 @@ gulp.task('compile-dist', function() {
     // Startup a test server for the build
     var connect = require('gulp-connect');
 
-    connect.server({root: './dist/', port: 8000});
+    connect.server({ root: './dist/', port: 8000 });
 });
 // --- }}}
