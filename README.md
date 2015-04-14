@@ -1,4 +1,4 @@
-## Morning Star
+## AngularJS-Gulp-Browserify-SASS-Seed
 
 Work in Progress. Stay tuned!
 
@@ -6,7 +6,6 @@ Work in Progress. Stay tuned!
 
 1. You should have `ruby`
 1. You should have `npm`
-
 
 ## Quick Start
 
@@ -55,21 +54,3 @@ npm test
 
 In addition to running the test suite, the code is checked with jshint for any
 errors. The test suite will fail if any jshint errors are found.
-
-## Style Guidelines
-
-The following are our JavaScript style guidelines:
-
-1. Always strive to be compatible with the standard Crockford style guidelines.
-1. All code should pass the `jshint` preprocessing steps before being pushed to
-master.
-
-The guidelines can be found [here](http://javascript.crockford.com/code.html).
-
-You can run the `jshint` gulp task via:
-
-```bash
-gulp lint
-```
-
-The task will automatically run when running `gulp` or `gulp build`.
