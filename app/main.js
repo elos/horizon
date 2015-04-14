@@ -9,7 +9,7 @@
     // --- }}}
 
     // --- Configure App {{{
-    var app = angular.module('AngularApp', ['ngRoute', 'ngAnimate']);
+    var app = angular.module('AngularSeedApp', ['ngRoute', 'ngAnimate']);
 
     app.config(['$locationProvider', '$routeProvider', '$httpProvider',
         function($locationProvider, $routeProvider, $httpProvider) {
