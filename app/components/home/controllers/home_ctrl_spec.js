@@ -1,5 +1,5 @@
 require('../../../main.js');
-require('../../../../assets/libs/angular-mocks/angular-mocks.js');
+require('../../../../libs/angular-mocks/angular-mocks.js');
 
 describe('Home', function() {
     beforeEach(angular.mock.module('AngularSeedApp'));

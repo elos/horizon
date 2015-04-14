@@ -3,9 +3,9 @@
 
     // --- Configure Dependencies {{{
     // Require all third party dependencies
-    require('../assets/libs/angular');
-    require('../assets/libs/angular-route');
-    require('../assets/libs/angular-animate');
+    require('../libs/angular');
+    require('../libs/angular-route');
+    require('../libs/angular-animate');
     // --- }}}
 
     // --- Configure App {{{
