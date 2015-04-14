@@ -5,7 +5,7 @@ var gulp = require('gulp');
 // --- Main Tasks {{{
 // Default, run development build and server.
 gulp.task('default',
-    ['clean', 'lint', 'compile', 'watch', 'connect']
+    ['clean', 'lint', 'watch', 'compile', 'connect']
 );
 
 // Create a production ready build.
@@ -19,19 +19,12 @@ gulp.task('test',
 );
 // --- }}}
 
-// --- Helper Tasks {{{
-// Runs code against jshint.
+// --- Lint {{{
 gulp.task('lint', function() {
     var jshint = require('gulp-jshint');
 
-    // Lint all generic code
-    gulp.src(['./assets/js/**/*.js'])
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'))
-        .pipe(jshint.reporter('fail'));
-
-    // Lint all app code
-    gulp.src(['./app/**/*.js'])
+    // Lint all JavaScript
+    gulp.src(['./app/**/*.js', './assets/js/**/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
         .pipe(jshint.reporter('fail'));
@@ -55,29 +48,37 @@ gulp.task('lint', function() {
         .pipe(htmlhint({'doctype-first': false}))
         .pipe(htmlhint.failReporter())
 });
+// --- }}}
 
-// Cleans up all generated build files.
+// --- Clean {{{
 gulp.task('clean', function() {
     var del = require('del');
 
     del.sync(['./dist/*', './bundled.js', './bundled.css', '!./dist/.gitkeep']);
 });
+// --- }}}
 
-gulp.task('connect', function () {
-    var connect = require('gulp-connect');
-
-    connect.server({port: 8000});
-});
-
+// --- Watch {{{
 gulp.task('watch', function() {
     gulp.watch([
         './app/**/*.js',
         './app/**/*.html',
         './index.html',
+        './assets/**/*.js',
         './assets/**/*.scss'
     ], ['lint', 'compile']);
 });
+// --- }}}
 
+// --- Connect {{{
+gulp.task('connect', function() {
+    var connect = require('gulp-connect');
+
+    connect.server({port: 8000});
+});
+// --- }}}
+
+// --- Tests {{{
 gulp.task('tests', function () {
     var karma = require('karma-as-promised');
 
@@ -86,8 +87,9 @@ gulp.task('tests', function () {
         singleRun: true
     });
 });
+// --- }}}
 
-// Development Only
+// --- Compile {{{
 gulp.task('compile', function() {
     // Compile and minify JavaScript
     var browserify = require('gulp-browserify'),
@@ -110,9 +112,9 @@ gulp.task('compile', function() {
         .pipe(minifyCSS())
         .pipe(gulp.dest('./'));
 });
+// --- }}}
 
-// Production quality, uglifies and does not include any
-// debugging information.
+// --- Compile Dist {{{
 gulp.task('compile-dist', function() {
     var browserify = require('gulp-browserify'),
         concat = require('gulp-concat'),
