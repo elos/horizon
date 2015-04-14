@@ -8,14 +8,22 @@ This was intended to be a base repository to clone and use for other projects.
 
 ## Requirements
 
-1. You should have `ruby`
+1. You should have `ruby` with `bundler`
 1. You should have `npm`
+
+If you receive a 'bundle' command not found, you can install `bundler` via:
+
+```bash
+gem install bundler
+```
+
+Note, OSX users may have to use sudo while installing bundler.
 
 ## Quick Start
 
-1. Clone the repo
+1. Clone the repository and change into the repository directory
 1. Install ruby gems with `bundle install`
-1. Install the local requirements: `npm install`
+1. Install the node requirements: `npm install`
 1. Install the Bower components: `bower install`
 1. Run locally: `gulp` or create a build: `gulp build`
 
