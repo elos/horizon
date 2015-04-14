@@ -12,3 +12,4 @@ dist/
 bundled.js
 bundled.css
 libs/
+bower_components/

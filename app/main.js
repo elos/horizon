@@ -3,9 +3,9 @@
 
     // --- Configure Dependencies {{{
     // Require all third party dependencies
-    require('../libs/angular');
-    require('../libs/angular-route');
-    require('../libs/angular-animate');
+    require('../bower_components/angular');
+    require('../bower_components/angular-route');
+    require('../bower_components/angular-animate');
     // --- }}}
 
     // --- Configure App {{{
