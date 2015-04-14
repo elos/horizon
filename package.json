@@ -2,7 +2,7 @@
   "name": "angular-gulp-browserify-sass-karma-seed",
   "version": "0.0.1",
   "description": "A simple sturctured app for AngularJS, Gulp, Browserify, SASS/Compass and Karma.",
-  "repository": "angular-gulp-browserify-sass-karma-seed",
+  "repository": "https://github.com/prophittcorey/angular-gulp-browserify-sass-karma-seed.git",
   "main": "Gulpfile.js",
   "scripts": {
     "build": "node_modules/.bin/gulp build",
