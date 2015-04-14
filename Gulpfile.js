@@ -43,6 +43,17 @@ gulp.task('lint', function() {
         .pipe(scsslint())
         .pipe(scsslint.reporter())
         .pipe(scsslint.reporter('fail'));
+
+    // Lint HTML
+    var htmlhint = require('gulp-htmlhint');
+
+    gulp.src('./index.html')
+        .pipe(htmlhint())
+        .pipe(htmlhint.failReporter())
+
+    gulp.src('./app/**/*.html')
+        .pipe(htmlhint({'doctype-first': false}))
+        .pipe(htmlhint.failReporter())
 });
 
 // Cleans up all generated build files.
