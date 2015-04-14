@@ -1,4 +1,4 @@
 {
-    "directory": "assets/libs",
+    "directory": "./libs",
     "analytics": false
 }
