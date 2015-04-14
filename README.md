@@ -1,6 +1,10 @@
-## AngularJS-Gulp-Browserify-SASS-Seed
+## AngularJS-Gulp-Browserify-SASS-Karma-Seed
 
-Work in Progress. Stay tuned!
+This is a simple app structure for building AngularJS apps. This seed project
+includes a lot of basic configuration and Gulp tasks for linting JS and SCSS
+as well as building/watching code.
+
+This was intended to be a base repository to clone and use for other projects.
 
 ## Requirements
 
