@@ -1,10 +1,9 @@
-## AngularJS-Gulp-Browserify-SASS-Karma-Seed
+## Horizon
 
-This is a simple app structure for building AngularJS apps. This seed project
-includes a lot of basic configuration and Gulp tasks for linting JS and SCSS
+Horizon is the elos web application. It is based on Corey Prophitt's [simple
+app structure for building AngularJS apps](https://github.com/prophittcorey/angular-gulp-browserify-sass-karma-seed).
+This project includes a lot of basic configuration and Gulp tasks for linting JS and SCSS
 as well as building/watching code.
-
-This was intended to be a base repository to clone and use for other projects.
 
 ## Requirements
 

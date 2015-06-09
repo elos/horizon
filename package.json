@@ -1,15 +1,18 @@
 {
-  "name": "angular-gulp-browserify-sass-karma-seed",
+  "name": "horizon",
   "version": "0.0.1",
-  "description": "A simple sturctured app for AngularJS, Gulp, Browserify, SASS/Compass and Karma.",
-  "repository": "https://github.com/prophittcorey/angular-gulp-browserify-sass-karma-seed.git",
+  "description": "The elos web application.",
+  "repository": "https://github.com/elos/horizon.git",
   "main": "Gulpfile.js",
   "scripts": {
     "build": "node_modules/.bin/gulp build",
     "watch": "node_modules/.bin/gulp",
     "test": "node_modules/.bin/gulp test"
   },
-  "author": "Corey Prophitt <prophitt.corey@gmail.com>",
+  "authors": [
+      "Corey Prophitt <prophitt.corey@gmail.com>",
+      "Nick Landolfi <nclandolfi@gmail.com>"
+  ],
   "dependencies": {
     "bower": "^1.4.1",
     "browserify": "^5.10.0",
