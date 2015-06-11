@@ -44,4 +44,11 @@
   app.controller('HomeController', require('./components/home/controllers/home_ctrl'));
   // --- }}}
 
+  // --- Configure Services {{{
+  app.service('CookieService', require('./shared/services/cookie/cookie_service'));
+  app.service('ApiService', require('./shared/services/api/api_service'));
+  app.service('RequestService', require('./shared/services/request/request_service'));
+  app.service('AccessService', require('./shared/services/access/access_service'));
+  // --- }}}
+
 }());
