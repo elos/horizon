@@ -14,25 +14,33 @@ module.exports = (function() {
         this.version = '';
 
         this.url = function(path, params) {
-            if (path[x] != PathDelimeter) {
+            // ensure path prepended delimeter
+            if (path[x] !== PathDelimeter) {
                 path = PathDelimeter + path;
             }
 
-            var stringParams = Object.keys(params).map(function(paramName) {
-                if (typeof(paramName) !== 'string') {
-                    throw 'invalid param name type, must be string';
+            if (params !== undefined) {
+                // ensure path post-ended with delimeter
+                if (path[path.length - 1] !== PathDelimeter) {
+                    path += PathDelimeter;
                 }
 
-                if (typeof(params[paramName]) !== 'string') {
-                    throw 'invalid param type, must be string';
-                }
+                var stringParams = Object.keys(params).map(function(paramName) {
+                    if (typeof(paramName) !== 'string') {
+                        throw 'invalid param name type, must be string';
+                    }
 
-                stringParams.push(paramName + "=" + params[paramName]);
-            });
+                    if (typeof(params[paramName]) !== 'string') {
+                        throw 'invalid param type, must be string';
+                    }
 
-            this.path += stringParams.join("&");
+                    stringParams.push(paramName + '=' + params[paramName]);
+                });
 
-            return this.protocol + "://" + this.host + ":" + this.port + this.path;
+                this.path += stringParams.join('&');
+            }
+
+            return this.protocol + '://' + this.host + ':' + this.port + this.path;
         };
 
         this.routes = {

@@ -11,7 +11,8 @@
   },
   "authors": [
       "Corey Prophitt <prophitt.corey@gmail.com>",
-      "Nick Landolfi <nclandolfi@gmail.com>"
+      "Nick Landolfi <nclandolfi@gmail.com>",
+      "Sam Calvert <sam.clvrt@gmail.com>"
   ],
   "dependencies": {
     "bower": "^1.4.1",
