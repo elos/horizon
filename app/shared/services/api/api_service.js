@@ -18,30 +18,19 @@ module.exports = (function() {
                 path = PathDelimeter + path;
             }
 
-            // first param doesn't need an and
-            var needsAnd = false;
-            for (var paramName in params) {
-                if (params.hasOwnProperty(paramName)) {
-                    if (typeof(paramName) !== 'string') {
-                        throw 'invalid param name type, must be string';
-                    }
-
-                    if (typeof(params[paramName]) !== 'string') {
-                        throw 'invalid param type, must be string';
-                    }
-
-                    if (needsAnd) {
-                        path += '&';
-                    }
-
-                    path += paramName;
-                    path += '=';
-                    path += params[paramName];
-
-                    // always need '&' after one param
-                    needsAnd = true;
+            var stringParams = Object.keys(params).map(function(paramName) {
+                if (typeof(paramName) !== 'string') {
+                    throw 'invalid param name type, must be string';
                 }
-            }
+
+                if (typeof(params[paramName]) !== 'string') {
+                    throw 'invalid param type, must be string';
+                }
+
+                stringParams.push(paramName + "=" + params[paramName]);
+            });
+
+            this.path += stringParams.join("&");
 
             return this.protocol + "://" + this.host + ":" + this.port + this.path;
         };
