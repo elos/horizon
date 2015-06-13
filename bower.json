@@ -6,6 +6,7 @@
     "angular-animate": "~1.3.15",
     "angular-mocks": "~1.3.15",
     "angular-route": "~1.3.15",
+    "angular-cookies": "~1.3.15",
     "compass-mixins": "~1.0.2"
   }
 }

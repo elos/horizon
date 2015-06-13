@@ -10,24 +10,21 @@ module.exports = (function() {
         // maybe could be Host Service
         this.protocol = 'http';
         this.host = 'localhost';
-        this.port = '8080';
+        this.port = '8000';
 
         // no versioning
         this.version = '';
 
         this.url = function(path, params) {
+            path = path || '';
+
             // ensure path prepended delimeter
             if (path[0] !== PathDelimeter) {
                 path = PathDelimeter + path;
             }
 
-            path += QueryBegin;
-
             if (params !== undefined) {
-                // ensure path post-ended with delimeter
-                if (path[path.length - 1] !== PathDelimeter) {
-                    path += PathDelimeter;
-                }
+                path += QueryBegin;
 
                 var stringParams = Object.keys(params).map(function(paramName) {
                     if (typeof paramName  !== 'string') {
@@ -38,13 +35,13 @@ module.exports = (function() {
                         throw 'invalid param type, must be string';
                     }
 
-                    stringParams.push(paramName + '=' + params[paramName]);
+                    return paramName + '=' + params[paramName];
                 });
 
-                this.path += stringParams.join(QueryDelimeter);
+                path += stringParams.join(QueryDelimeter);
             }
 
-            return this.protocol + '://' + this.host + ':' + this.port + this.path;
+            return this.protocol + '://' + this.host + ':' + this.port + path;
         };
 
         this.routes = {

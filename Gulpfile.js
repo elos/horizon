@@ -78,7 +78,7 @@ gulp.task('watch', function() {
 gulp.task('connect', function() {
     var connect = require('gulp-connect');
 
-    connect.server({ port: 8000 });
+    connect.server({ port: 9393 });
 });
 // --- }}}
 

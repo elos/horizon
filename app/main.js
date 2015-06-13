@@ -3,13 +3,14 @@
 
     // --- Configure Dependencies {{{
     // Require all third party dependencies
-    require('../bower_components/angular');
+    var angular = require('../bower_components/angular');
     require('../bower_components/angular-route');
     require('../bower_components/angular-animate');
+    require('../bower_components/angular-cookies');
     // --- }}}
 
     // --- Configure App {{{
-    var app = angular.module('horizon', [ 'ngRoute', 'ngAnimate' ]);
+    var app = angular.module('horizon', [ 'ngRoute', 'ngAnimate', 'ngCookies' ]);
 
     app.config([ '$locationProvider', '$routeProvider', '$httpProvider',
         function($locationProvider, $routeProvider, $httpProvider) {
@@ -23,9 +24,9 @@
             $httpProvider.defaults.transformRequest = [ function(data) {
                 if (angular.isObject(data) && String(data) !== '[object File]') {
                     return encodeData(data);
-                } else {
-                    return data;
                 }
+
+                return data;
             } ];
 
             // Configure Routing
@@ -33,6 +34,10 @@
                 .when('/', {
                     templateUrl: './app/components/home/views/home.html',
                     controller: 'HomeController'
+                })
+                .when('/login', {
+                    templateUrl: './app/components/login/login.html',
+                    controller: 'LoginController'
                 })
                 .otherwise({
                     redirectTo: '/'
@@ -42,13 +47,14 @@
 
   // --- Configure Controllers {{{
   app.controller('HomeController', require('./components/home/controllers/home_ctrl'));
+  app.controller('LoginController', require('./components/login/login_controller'));
   // --- }}}
 
   // --- Configure Services {{{
-  app.service('CookieService', require('./shared/services/cookie/cookie_service'));
+  app.service('AccessService', require('./shared/services/access/access_service'));
   app.service('ApiService', require('./shared/services/api/api_service'));
   app.service('RequestService', require('./shared/services/request/request_service'));
-  app.service('AccessService', require('./shared/services/access/access_service'));
+  app.service('KeyService', require('./shared/services/key/key_service'));
   // --- }}}
 
 }());

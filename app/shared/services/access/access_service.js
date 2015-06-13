@@ -5,63 +5,83 @@ module.exports = (function() {
         NoTokenError = 'no token',
         AccessService;
 
-    AccessService = function(ApiService, CookieService, ModelsService, RequestService) {
+    AccessService = function($cookies, ApiService, RequestService) {
+        this._token = undefined;
+        this._unauthedReason = undefined;
 
         // --- SessionCache {{{
 
-        this.cacheSession = function(session) {
-            CookieService.remember(ElosAuthToken, session.token);
+        this.cacheToken = function(token) {
+            this._token = token;
+            $cookies.set(ElosAuthToken, token);
         };
 
-        this.getCachedSession = function(session) {
-            var token = CookieService.recall(ElosAuthToken);
+        this.getCachedToken = function() {
+            if (this._token) {
+                return this._token;
+            }
+
+            var token = $cookies.get(ElosAuthToken);
 
             if (token === undefined || token === null || token === '') {
                 throw NoTokenError;
             }
 
-            return {
-                token: token
-            };
+            return token;
         };
 
-        this.clearCachedSession = function(session) {
-            CookieService.forget(ElosAuthService);
+        this.clearCachedSession = function() {
+            this._token = undefined;
+            $cookies.remove(ElosAuthToken);
         };
 
         // --- }}}
 
         this.authenticate = function(publicInfo, privateInfo) {
-            RequestService.POST(
-                ApiService.url(
-                    ApiService.routes.sessions,
-                    {
-                     'public': publicInfo,
-                     'private': privateInfo
-                    }
-                ),
-                {}
-            ).then(
-                function(response) {
-                    this.cacheSession(response.data.data.session);
-                    return true;
-                },
-                function(response) {
-                    alert(response);
-                    return false;
-                }
-            );
+            var token, success;
 
-            // need to handle this promise
+            try {
+                token = this.getCachedToken();
+            } catch (NoTokenError) {
+                RequestService.POST(
+                    ApiService.url(
+                        "/sessions",
+                        {
+                         'public': publicInfo,
+                         'private': privateInfo
+                        }
+                    ),
+                    {}
+                ).then(
+                    function(response) {
+                        token = response.data.data.session.token;
+                        success = true;
+                    },
+                    function(response) {
+                        AccessService._unauthedReason = response.data.message;
+                        success = false;
+                    }
+                );
+            }
+
+            if (success) {
+                this.cacheToken(token);
+            }
+
+            return success;
         };
 
         this.authenticated = function() {
-            return token !== undefined && token !== null && token !== '';
+            return this._token !== undefined && this._token !== null && this._token !== '';
+        };
+
+        this.unauthedReason = function() {
+            return this._unauthedReason || '';
         };
 
     };
 
-    AccessService.$inject = [ 'ApiService', 'CookieService', 'ModelsService', 'RequestService' ];
+    AccessService.$inject = [ '$cookies', 'ApiService', 'RequestService' ];
 
     return AccessService;
 }());

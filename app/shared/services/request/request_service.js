@@ -15,7 +15,15 @@ module.exports = (function() {
         this.validActions = [ 'POST', 'GET', 'DELETE' ];
 
         this.validAction = function(action) {
-            return this.validActions.includes(action);
+            var i;
+
+            for (i = 0; i < this.validActions.length; i += 1) {
+                if (this.validActions[i] === action) {
+                    return true;
+                }
+            }
+
+            return false;
         };
 
         // --- }}}
@@ -28,17 +36,19 @@ module.exports = (function() {
         };
 
         this.includeHeader = function(key, value) {
-            for (var i in this.validActions) {
+            var i;
+
+            for (i = 0; i < this.validActions.length; i += 1) {
                 this.includeActionHeader(this.validactions[i], key, value);
             }
         };
 
         this.includeActionHeader = function(action, key, value) {
-            if (!validAction(action)) {
-                throw 'invalid action ' + method;
+            if (!this.validAction(action)) {
+                throw 'invalid action ' + action;
             }
 
-            this.headersConfig[action] = this.headersConfig[method] || {};
+            this.headersConfig[action] = this.headersConfig[action] || {};
             this.headersConfig[action][key] = value;
         };
 
@@ -59,7 +69,7 @@ module.exports = (function() {
         this.request = function(url, action, headers, data) {
             return this.execute({
                 url: url,
-                action: method,
+                action: action,
                 headers: headers,
                 data: data
             });
@@ -97,9 +107,11 @@ module.exports = (function() {
                 throw 'request.url can\'t be undefined';
             }
 
-            if (!validAction(action)) {
+            if (!this.validAction(request.action)) {
                 throw 'request.action ' + request.method + ' is invalid';
             }
+
+            request.method = request.action;
 
             // We are ok with undefineds, but now we will set to empty object
             request.headers = request.headers || {};
@@ -116,9 +128,10 @@ module.exports = (function() {
             }
 
             // Apply default headers
-            var actionConfig = headersConfig[request.method];
+            var actionConfig = this.headersConfig[request.method],
+                header;
             if (actionConfig) {
-                for (var header in actionConfig) {
+                for (header in actionConfig) {
                     if (actionConfig.hasOwnProperty(header)) {
                         if (request.headers.hasOwnProperty(header)) {
                             if (request.headers[header] === undefined) {
@@ -144,4 +157,4 @@ module.exports = (function() {
     RequestService.$inject = [ '$http' ];
 
     return RequestService;
-});
+}());
