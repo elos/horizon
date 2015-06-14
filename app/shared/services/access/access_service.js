@@ -1,6 +1,4 @@
 module.exports = (function() {
-    'use strict';
-
     var ElosAuthToken = 'elos-auth-token',
         NoTokenError = 'no token',
         AccessService;
@@ -42,7 +40,7 @@ module.exports = (function() {
 
             try {
                 token = this.getCachedToken();
-            } catch (NoTokenError) {
+            } catch (err) { // this will be a NoTokenError
                 RequestService.POST(
                     ApiService.url(
                         "/sessions",

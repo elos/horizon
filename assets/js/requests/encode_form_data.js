@@ -3,9 +3,7 @@
 //
 // This was taken from:
 //  http://stackoverflow.com/a/20276775/427390
-module.exports = function(obj) {
-    'use strict';
-
+var param = function(obj) {
     var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
 
     for (name in obj) {
@@ -34,3 +32,5 @@ module.exports = function(obj) {
 
     return query.length ? query.substr(0, query.length - 1) : query;
 };
+
+module.exports = param;

@@ -6,7 +6,12 @@
     },
     "parser": "babel-eslint",
     "rules": {
-        "strict": 0,
-        "quotes": "single"
+        "camelcase": false,
+        "key-spacing": false,
+        "new-cap": false,
+        "no-multi-spaces": false,
+        "no-underscore-dangle": false,
+        "quotes": "single",
+        "strict": 0
     }
 }

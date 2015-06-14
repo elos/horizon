@@ -1,6 +1,4 @@
 module.exports = (function() {
-    'use strict';
-
     var LoginController = function($scope, $log, AccessService, KeyService) {
         var controller = this;
 
@@ -48,7 +46,7 @@ module.exports = (function() {
                     $scope.states.canSubmit = false;
                     controller.error.show(AccessService.unauthedReason());
                 }
-            },
+            }
         };
 
        controller.error = {

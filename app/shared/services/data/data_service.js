@@ -1,7 +1,6 @@
 module.exports = (function() {
-    'use strict';
-
     var DataService = function($http) {
+        $http.get('/');
         this.collections = {
         };
     };

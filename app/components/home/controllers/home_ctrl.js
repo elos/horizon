@@ -1,8 +1,6 @@
 module.exports = (function() {
-    'use strict';
-
     var HomeController = function($scope, $location) {
-
+        $location.absUrl();
     };
 
     HomeController.$inject = [ '$scope', '$location' ];

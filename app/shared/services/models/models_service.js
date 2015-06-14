@@ -1,6 +1,4 @@
 module.exports = (function() {
-    'use strict';
-
     var newUser, newPerson, newSession, newCredential, newCalendar, ModelsService;
 
     newUser = function() {
@@ -49,11 +47,11 @@ module.exports = (function() {
             user_id: '',
 
             user: function(DataService) {
-                if (_user) {
-                    return _user;
+                if (this._user !== undefined) {
+                    return this._user;
                 }
 
-                user = newUser();
+                var user = newUser();
 
                 DataService.kind(user.kind).find(this.user_id).then(
                     function(response) {
@@ -75,9 +73,12 @@ module.exports = (function() {
                 this.token         = json.token || this.token;
                 this.expires_after = json.expires_after || this.expires_after;
                 this.user_id       = json.user_id || this.user_id;
-            },
+            }
         };
     };
+
+    newCredential = function() {};
+    newCalendar = function() {};
 
     ModelsService = function() {
         this.kinds = [ 'person', 'session', 'credential', 'calendar' ];
@@ -89,12 +90,13 @@ module.exports = (function() {
             'calendar': 'calendars'
         };
 
-        this.newPerson = function() {
-            return person();
-        };
+        this.newPerson = newPerson;
+        this.newSession = newSession;
+        this.newCredential = newCredential;
+        this.newCalendar = newCalendar;
     };
 
     ModelsService.$inject = [ ];
 
-    return DataService;
+    return ModelsService;
 }());

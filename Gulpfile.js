@@ -10,7 +10,9 @@ var babelify = require('babelify'),
 var browserified = transform(function(filename) {
     return browserify(filename, {
         debug: true,
-        transform: [babelify]
+        transform: [
+            babelify.configure({ ignore: "bower_components" })
+        ]
     }).bundle();
 });
 // --- }}}
@@ -39,7 +41,6 @@ gulp.task('lint', function() {
 
     // Lint all JavaScript and check style
     gulp.src([ './app/**/*.js', './assets/js/**/*.js' ])
-        .pipe(jscs())
         .pipe(eslint())
         .pipe(eslint.format())
 

@@ -1,5 +1,4 @@
 module.exports = (function() {
-    'use strict';
 
     // Headers config
     // {
@@ -32,7 +31,7 @@ module.exports = (function() {
         this.headersConfig = {
             'POST': {},
             'GET': {},
-            'DELETE': {},
+            'DELETE': {}
         };
 
         this.includeHeader = function(key, value) {
@@ -62,7 +61,7 @@ module.exports = (function() {
                 action: undefined,
                 url: undefined,
                 headers: {},
-                data: {},
+                data: {}
             };
         };
 
@@ -119,11 +118,11 @@ module.exports = (function() {
 
             // But now we must assert they are objects, assuming someone could
             // pass headers: true or something crazy cause we have no types
-            if (typeof(request.headers) !== 'object') {
+            if (typeof request.headers !== 'object') {
                 throw 'request.headers must be of type object';
             }
 
-            if (typeof(request.data) !== 'object') {
+            if (typeof request.data !== 'object') {
                 throw 'request.data must be of type object';
             }
 

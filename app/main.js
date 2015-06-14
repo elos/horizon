@@ -1,6 +1,4 @@
 (function () {
-    'use strict';
-
     // --- Configure Dependencies {{{
     // Require all third party dependencies
     var angular = require('../bower_components/angular');
