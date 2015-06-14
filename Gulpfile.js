@@ -2,6 +2,19 @@
 var gulp = require('gulp');
 // --- }}}
 
+// Babel the code --- {{{
+var babelify = require('babelify'),
+    browserify = require('browserify'),
+    transform = require('vinyl-transform');
+
+var browserified = transform(function(filename) {
+    return browserify(filename, {
+        debug: true,
+        transform: [babelify]
+    }).bundle();
+});
+// --- }}}
+
 // --- Main Tasks {{{
 // Default, run development build and server.
 gulp.task('default',
@@ -96,13 +109,10 @@ gulp.task('tests', function () {
 // --- Compile {{{
 gulp.task('compile', function() {
     // Compile and minify JavaScript
-    var browserify = require('gulp-browserify'),
-        concat = require('gulp-concat');
+    var concat = require('gulp-concat');
 
     gulp.src([ 'app/main.js' ])
-        .pipe(browserify({
-            debug: true
-        }))
+        .pipe(browserified)
         .pipe(concat('bundled.js'))
         .pipe(gulp.dest('./'))
 
@@ -120,15 +130,12 @@ gulp.task('compile', function() {
 
 // --- Compile Dist {{{
 gulp.task('compile-dist', function() {
-    var browserify = require('gulp-browserify'),
-        concat = require('gulp-concat'),
+    var concat = require('gulp-concat'),
         stripDebug = require('gulp-strip-debug'),
         uglify = require('gulp-uglify');
 
     gulp.src([ 'app/main.js' ])
-        .pipe(browserify({
-            debug: false
-        }))
+        .pipe(browserified)
         .pipe(concat('bundled.js'))
         .pipe(uglify())
         .pipe(stripDebug())
