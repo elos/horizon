@@ -37,10 +37,12 @@ gulp.task('test',
 // --- Lint {{{
 gulp.task('lint', function() {
     var eslint = require('gulp-eslint'),
+        flow = require('gulp-flowtype'),
         jscs = require('gulp-jscs');
 
     // Lint all JavaScript and check style
     gulp.src([ './app/**/*.js', './assets/js/**/*.js' ])
+        .pipe(flow())
         .pipe(jscs({ "esnext": true }))
         .pipe(eslint())
         .pipe(eslint.format())
