@@ -34,15 +34,14 @@ gulp.task('test',
 
 // --- Lint {{{
 gulp.task('lint', function() {
-    var jshint = require('gulp-jshint'),
+    var eslint = require('gulp-eslint'),
         jscs = require('gulp-jscs');
 
     // Lint all JavaScript and check style
     gulp.src([ './app/**/*.js', './assets/js/**/*.js' ])
         .pipe(jscs())
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'))
-        .pipe(jshint.reporter('fail'));
+        .pipe(eslint())
+        .pipe(eslint.format())
 
     // Lint all SCSS
     var scsslint = require('gulp-scsslint');
