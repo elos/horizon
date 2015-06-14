@@ -1,4 +1,9 @@
 {
+    // Allow use of browser and node globals
+    "env": {
+        "browser": true,
+        "node": true
+    },
     "parser": "babel-eslint",
     "rules": {
         "strict": 0,
