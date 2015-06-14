@@ -41,9 +41,7 @@ gulp.task('lint', function() {
 
     // Lint all JavaScript and check style
     gulp.src([ './app/**/*.js', './assets/js/**/*.js' ])
-        .pipe(jscs({
-            "esnext": true
-        }))
+        .pipe(jscs({ "esnext": true }))
         .pipe(eslint())
         .pipe(eslint.format())
 
