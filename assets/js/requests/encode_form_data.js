@@ -3,7 +3,8 @@
 //
 // This was taken from:
 //  http://stackoverflow.com/a/20276775/427390
-var param = function(obj) {
+
+var param = function(obj: Object): string {
     var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
 
     for (name in obj) {

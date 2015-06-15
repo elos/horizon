@@ -8,10 +8,12 @@ module.exports = (function() {
     //  'GET': ...
     // }
 
-    var RequestService = function($http) {
+    var RequestService = function($http: (req: Object) => Object) {
         // --- Actions {{{
 
         this.validActions = [ 'POST', 'GET', 'DELETE' ];
+
+        $http.get('/');
 
         this.validAction = function(action) {
             var i;
