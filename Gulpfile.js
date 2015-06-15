@@ -42,7 +42,9 @@ gulp.task('lint', function() {
 
     // Lint all JavaScript and check style
     gulp.src([ './app/**/*.js', './assets/js/**/*.js' ])
-        .pipe(flow())
+        .pipe(flow({
+            all: true
+        }))
         .pipe(jscs({
             "esnext": true,
             "esprima": "babel-jscs"
