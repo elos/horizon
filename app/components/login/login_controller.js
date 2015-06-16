@@ -4,7 +4,7 @@ module.exports = (function() {
     var LoginController,
         DefaultError = 'Something went wrong';
 
-    LoginController = function($scope, $location, $log, AccessService, KeyService) {
+    LoginController = function($scope, $location, AccessService, KeyService) {
         var controller = this;
 
         // --- States {{{
@@ -46,10 +46,10 @@ module.exports = (function() {
 
             authenticationResult: function(deferred) {
                 deferred.then(
-                    function(response) {
+                    function(_response) {
                         $location.path('/home');
                     },
-                    function(response) {
+                    function(_response) {
                         $scope.states.canSubmit = false;
                         controller.error.show(DefaultError);
                     }
@@ -71,13 +71,13 @@ module.exports = (function() {
 
         // --- Initialization {{{
         if (AccessService.isAuthenticated()) {
-            $log.info('already authenticated');
+            $location.path('/home');
         }
         // --- }}}
     };
 
-    LoginController.$inject = [ '$scope', '$location', '$log',
-                                'AccessService', 'KeyService' ];
+    LoginController.$inject = [ '$scope', '$location', 'AccessService',
+                                'KeyService' ];
 
     return LoginController;
 }());

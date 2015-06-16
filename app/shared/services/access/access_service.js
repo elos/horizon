@@ -2,13 +2,14 @@ module.exports = (function() {
     'use strict';
 
     var TokenCookie = 'elos-auth-token',
-        NoTokenError = 'no token',
         AccessService;
 
-    AccessService = function($cookies, $http, HostService) {
+    AccessService = function($cookies, $http, $q, $window, HostService) {
         var service = this;
 
+        // --- Service Constants {{{
         service.Unauthorized = 'Unauthorized';
+        // --- }}}
 
         // --- Cookies & Caching {{{
 
@@ -23,7 +24,7 @@ module.exports = (function() {
 
         function recallToken() {
             // get cookie
-            var cookie = CookieService.get(TokenCookie);
+            var cookie = $cookies[TokenCookie];
 
             if (cookie === '') {
                 service._token = undefined;
@@ -41,9 +42,10 @@ module.exports = (function() {
 
         // --- }}}
 
+        // --- token() & isAuthenticated() {{{
         this.token = function() {
             if (service._token) {
-                return token;
+                return service._token;
             }
 
             return recallToken();
@@ -53,6 +55,9 @@ module.exports = (function() {
             return (!!this._token);
         };
 
+        // --- }}}
+
+        // --- Login/Logout {{{
         this.login = function(publicCredential, privateCredential) {
             return $http({
                 method: 'POST',
@@ -68,12 +73,14 @@ module.exports = (function() {
 
         this.logout = function() {
             // Clear out session
-            forgetSession();
+            forgetToken();
 
             // Reload for fresh data
             $window.location = "./";
         };
+        // --- }}}
 
+        // --- Route resolve: 'authenticate' {{{
         this.authenticate = function() {
             return $q(function(resolve, reject) {
                 var presentToken = service.token();
@@ -85,9 +92,18 @@ module.exports = (function() {
                 reject(service.Unauthorized);
             });
         };
+        // --- }}}
+
+        // --- Initialization {{{
+        function init() {
+            service._token = recallToken();
+        }
+
+        init();
+        // --- }}}
     };
 
-    AccessService.$inject = [ '$cookies', '$http', 'HostService' ];
+    AccessService.$inject = [ '$cookies', '$http', '$q', '$window', 'HostService' ];
 
     return AccessService;
 }());

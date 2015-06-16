@@ -29,7 +29,7 @@
                 return data;
             } ];
 
-            // Configure Routing
+            // --- Configure Routing {{{
             $routeProvider
                 .when('/', {
                     templateUrl: './app/components/home/views/home.html',
@@ -42,6 +42,7 @@
                 .otherwise({
                     redirectTo: '/'
                 });
+            // --- }}}
     } ]);
     // --- }}}
 
