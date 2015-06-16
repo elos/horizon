@@ -44,6 +44,14 @@
                 });
             // --- }}}
     } ]);
+
+    app.run([ '$rootScope', 'TimeService', function($rootScope, TimeService) {
+        if (TimeService.isDaytime()) {
+            $rootScope.theme = 'light';
+        } else {
+            $rootScope.theme = 'dark';
+        }
+    } ]);
     // --- }}}
 
   // --- Configure Controllers {{{
@@ -56,6 +64,7 @@
   app.service('HostService', require('./shared/services/host/host_service'));
   app.service('KeyService', require('./shared/services/key/key_service'));
   app.service('RequestService', require('./shared/services/request/request_service'));
+  app.service('TimeService', require('./shared/services/time/time_service'));
   // --- }}}
 
 }());

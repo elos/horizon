@@ -1,0 +1,151 @@
+@import '../shared/colors';
+@import '../shared/fonts';
+@import '../shared/mixins';
+
+// --- Variables {{{
+$login-header-height: 40px;
+// --- }}}
+
+// --- Header {{{
+
+// structural components
+@mixin login-header {
+  height: $login-header-height;
+  line-height: $login-header-height;
+}
+
+.login-header-light {
+  @include login-header;
+
+  background-color: $dream;
+}
+
+.login-header-dark {
+  @include login-header;
+
+  background-color: $nack;
+}
+
+.login-elos-header {
+  color: $eleen;
+  font-family: $avenir-stack;
+  height: inherit;
+  line-height: inherit;
+  text-align: center;
+  width: 100%;
+}
+// --- }}}
+
+// --- Content {{{
+@mixin login-content {
+}
+
+.login-content-light {
+  @include login-content;
+
+  background-color: $dream;
+}
+
+.login-content-dark {
+  @include login-content;
+
+  background-color: $nack;
+}
+// --- }}}
+
+// --- Headers {{{
+@mixin login-title {
+  margin-top: 100px;
+  text-align: center;
+  width: 100%;
+}
+
+.login-title-light {
+  @include login-title;
+
+  color: $nack;
+}
+
+.login-title-dark {
+  @include login-title;
+
+  color: $dream;
+}
+// --- }}}
+
+// --- Card {{{
+@mixin login-card {
+  border: 1px solid $nack;
+  margin-top: 20px;
+  padding: 40px;
+  padding-bottom: 50px;
+  text-align: center;
+}
+
+.login-card-light {
+  @include login-card;
+
+  background-color: $white;
+}
+
+.login-card-dark {
+  @include login-card;
+
+  background-color: $dream;
+}
+// --- }}}
+
+// --- Inputs {{{
+@mixin login-input {
+  background: none;
+  background-color: $white-grey;
+  border: 1px solid $grey;
+  border-radius: 7px;
+  color: $nack;
+  font-size: 20px;
+  margin-top: 20px;
+  outline: 0;
+  padding: 10px;
+  width: 50vw;
+
+  @include input-placeholder {
+    color: $grey-light;
+    font-family: $avenir-stack;
+  };
+}
+
+.login-input-light {
+  @include login-input;
+}
+
+.login-input-dark {
+  @include login-input;
+}
+// --- }}}
+
+// --- Buttons {{{
+.login-continue-button {
+  color: $eleen;
+  cursor: pointer;
+  margin-top: 20px;
+  padding: 5px;
+
+  &.disabled {
+    opacity: .2;
+  }
+}
+// --- }}}
+
+// --- Error {{{
+.login-error {
+  background-color: $white rgba($red, .1);
+  border: 1px solid $red;
+  border-radius: 7px;
+  color: $red;
+  font-size: 20px;
+  margin: 20px auto;
+  padding: 10px;
+  text-align: center;
+  width: 50vw;
+}
+// --- }}}

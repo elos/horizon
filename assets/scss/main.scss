@@ -4,9 +4,24 @@
 // Our global CSS reset
 @include global-reset;
 
-$red: #f00;
+// Our components
+@import './components/login';
 
-.red-centered-text {
-  color: $red;
-  text-align: center;
+@import './shared/fonts';
+
+@mixin body {
+  font-family: $avenir-stack;
+
+}
+
+.body-light {
+  @include body;
+
+  background-color: $dream;
+}
+
+.body-dark {
+  @include body;
+
+  background-color: $nack;
 }

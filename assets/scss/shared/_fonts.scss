@@ -1,0 +1,10 @@
+@import '../../bower_components/compass-mixins/lib/compass/css3';
+
+@font-face {
+  font-family: 'AvenirNextRegular';
+  src: url('../../../assets/fonts/avenirnext/AvenirNext-Regular.woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$avenir-stack: 'AvenirNextRegular', Helvetica, sans-serif;
