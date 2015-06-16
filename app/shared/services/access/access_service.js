@@ -1,87 +1,93 @@
 module.exports = (function() {
     'use strict';
 
-    var ElosAuthToken = 'elos-auth-token',
+    var TokenCookie = 'elos-auth-token',
         NoTokenError = 'no token',
         AccessService;
 
-    AccessService = function($cookies, ApiService, RequestService) {
-        this._token = undefined;
-        this._unauthedReason = undefined;
+    AccessService = function($cookies, $http, HostService) {
+        var service = this;
 
-        // --- SessionCache {{{
+        service.Unauthorized = 'Unauthorized';
 
-        this.cacheToken = function(token) {
-            this._token = token;
-            $cookies.set(ElosAuthToken, token);
-        };
+        // --- Cookies & Caching {{{
 
-        this.getCachedToken = function() {
-            if (this._token) {
-                return this._token;
+        function rememberToken(token) {
+            service._token = token;
+            try {
+                $cookies[TokenCookie] = token;
+            } catch (ignore) {
+                // pass
+            }
+        }
+
+        function recallToken() {
+            // get cookie
+            var cookie = CookieService.get(TokenCookie);
+
+            if (cookie === '') {
+                service._token = undefined;
+            } else {
+                service._token = cookie;
             }
 
-            var token = $cookies.get(ElosAuthToken);
+            return service._token;
+        }
 
-            if (token === undefined || token === null || token === '') {
-                throw NoTokenError;
-            }
-
-            return token;
-        };
-
-        this.clearCachedSession = function() {
-            this._token = undefined;
-            $cookies.remove(ElosAuthToken);
-        };
+        function forgetToken() {
+            service._token = undefined;
+            $cookies.remove(TokenCookie);
+        }
 
         // --- }}}
 
-        this.authenticate = function(publicInfo, privateInfo) {
-            var token, success;
-
-            try {
-                token = this.getCachedToken();
-            } catch (NoTokenError) {
-                RequestService.POST(
-                    ApiService.url(
-                        "/sessions",
-                        {
-                         'public': publicInfo,
-                         'private': privateInfo
-                        }
-                    ),
-                    {}
-                ).then(
-                    function(response) {
-                        token = response.data.data.session.token;
-                        success = true;
-                    },
-                    function(response) {
-                        AccessService._unauthedReason = response.data.message;
-                        success = false;
-                    }
-                );
+        this.token = function() {
+            if (service._token) {
+                return token;
             }
 
-            if (success) {
-                this.cacheToken(token);
-            }
-
-            return success;
+            return recallToken();
         };
 
-        this.authenticated = function() {
-            return this._token !== undefined && this._token !== null && this._token !== '';
+        this.isAuthenticated = function() {
+            return (!!this._token);
         };
 
-        this.unauthedReason = function() {
-            return this._unauthedReason || '';
+        this.login = function(publicCredential, privateCredential) {
+            return $http({
+                method: 'POST',
+                url: HostService.url('/sessions'),
+                params: {
+                    'public': publicCredential,
+                    'private': privateCredential
+                }
+            }).success(function (response) {
+                rememberToken(response.data.session.token);
+            });
         };
 
+        this.logout = function() {
+            // Clear out session
+            forgetSession();
+
+            // Reload for fresh data
+            $window.location = "./";
+        };
+
+        this.authenticate = function() {
+            return $q(function(resolve, reject) {
+                var presentToken = service.token();
+
+                if (presentToken) {
+                    resolve(presentToken);
+                }
+
+                reject(service.Unauthorized);
+            });
+        };
     };
 
-    AccessService.$inject = [ '$cookies', 'ApiService', 'RequestService' ];
+    AccessService.$inject = [ '$cookies', '$http', 'HostService' ];
 
     return AccessService;
 }());

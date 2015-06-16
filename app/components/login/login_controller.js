@@ -1,7 +1,10 @@
 module.exports = (function() {
     'use strict';
 
-    var LoginController = function($scope, $log, AccessService, KeyService) {
+    var LoginController,
+        DefaultError = 'Something went wrong';
+
+    LoginController = function($scope, $location, $log, AccessService, KeyService) {
         var controller = this;
 
         // --- States {{{
@@ -18,7 +21,7 @@ module.exports = (function() {
         $scope.handlers = {
             submit: function(publicCredential, privateCredential) {
                controller.helpers.authenticationResult(
-                   AccessService.authenticate(
+                   AccessService.login(
                        publicCredential,
                        privateCredential
                    )
@@ -41,13 +44,16 @@ module.exports = (function() {
                 return publicCredential && privateCredential;
             },
 
-            authenticationResult: function(success) {
-                if (success) {
-                    $log.info('success!');
-                } else {
-                    $scope.states.canSubmit = false;
-                    controller.error.show(AccessService.unauthedReason());
-                }
+            authenticationResult: function(deferred) {
+                deferred.then(
+                    function(response) {
+                        $location.path('/home');
+                    },
+                    function(response) {
+                        $scope.states.canSubmit = false;
+                        controller.error.show(DefaultError);
+                    }
+                );
             },
         };
 
@@ -64,14 +70,14 @@ module.exports = (function() {
         // --- }}}
 
         // --- Initialization {{{
-        if (AccessService.authenticated()) {
+        if (AccessService.isAuthenticated()) {
             $log.info('already authenticated');
         }
         // --- }}}
     };
 
-    LoginController.$inject = [ '$scope', '$log', 'AccessService',
-                                'KeyService' ];
+    LoginController.$inject = [ '$scope', '$location', '$log',
+                                'AccessService', 'KeyService' ];
 
     return LoginController;
 }());

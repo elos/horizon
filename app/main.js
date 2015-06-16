@@ -52,9 +52,9 @@
 
   // --- Configure Services {{{
   app.service('AccessService', require('./shared/services/access/access_service'));
-  app.service('ApiService', require('./shared/services/api/api_service'));
-  app.service('RequestService', require('./shared/services/request/request_service'));
+  app.service('HostService', require('./shared/services/host/host_service'));
   app.service('KeyService', require('./shared/services/key/key_service'));
+  app.service('RequestService', require('./shared/services/request/request_service'));
   // --- }}}
 
 }());
