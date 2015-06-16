@@ -8,10 +8,6 @@
 <div class="login-content">
     <h1 class="login-title"> Sign In </h1>
     <section class="login-card">
-        <p class="login-error"
-           data-ng-bind="states.error.text"
-           >
-        </p>
         <input type="text"
                id="public-credential"
                class="login-input"
@@ -42,5 +38,9 @@
             Continue
         </p>
     </section>
+    <p class="login-error"
+       data-ng-bind="states.error.text"
+       >
+    </p>
 </div>
 <!-- }}} -->
