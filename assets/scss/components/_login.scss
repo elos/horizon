@@ -138,7 +138,7 @@ $login-header-height: 40px;
 
 // --- Error {{{
 .login-error {
-  background-color: $white rgba($red, .1);
+  background-color: rgba($red, .1);
   border: 1px solid $red;
   border-radius: 7px;
   color: $red;
