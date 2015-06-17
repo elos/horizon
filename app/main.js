@@ -32,7 +32,7 @@
             // --- Configure Routing {{{
             $routeProvider
                 .when('/', {
-                    templateUrl: './app/components/home/views/home.html',
+                    templateUrl: './app/components/home/home.html',
                     controller: 'HomeController'
                 })
                 .when('/login', {
@@ -55,7 +55,7 @@
     // --- }}}
 
   // --- Configure Controllers {{{
-  app.controller('HomeController', require('./components/home/controllers/home_ctrl'));
+  app.controller('HomeController', require('./components/home/home_controller'));
   app.controller('LoginController', require('./components/login/login_controller'));
   // --- }}}
 
