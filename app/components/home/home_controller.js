@@ -1,11 +1,18 @@
 module.exports = (function() {
     'use strict';
 
-    var HomeController = function($scope, $location) {
+    var HomeController = function ($scope, AccessService) {
+        // --- Handlers {{{
+        $scope.handlers = {
+            logout: function () {
+                AccessService.logout();
+            }
+        };
+        // --- }}}
 
     };
 
-    HomeController.$inject = [ '$scope', '$location' ];
+    HomeController.$inject = [ '$scope', 'AccessService' ];
 
     return HomeController;
 }());

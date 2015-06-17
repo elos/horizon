@@ -37,7 +37,7 @@ module.exports = (function() {
 
         function forgetToken() {
             service._token = undefined;
-            $cookies.remove(TokenCookie);
+            $cookies[TokenCookie] = '';
         }
 
         // --- }}}

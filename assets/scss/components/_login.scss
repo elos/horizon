@@ -125,13 +125,22 @@ $login-header-height: 40px;
 
 // --- Buttons {{{
 .login-continue-button {
+  background-color: rgba($eleen, .2);
+  border: 1px solid $eleen;
+  border-radius: 50%;
   color: $eleen;
   cursor: pointer;
+  font-size: 16px;
+  height: 80px;
+  line-height: 80px;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 20px;
   padding: 5px;
+  width: 80px;
 
   &.disabled {
-    opacity: .2;
+    opacity: .5;
   }
 }
 // --- }}}
