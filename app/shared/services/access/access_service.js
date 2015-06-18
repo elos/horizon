@@ -1,87 +1,109 @@
 module.exports = (function() {
     'use strict';
 
-    var ElosAuthToken = 'elos-auth-token',
-        NoTokenError = 'no token',
+    var TokenCookie = 'elos-auth-token',
         AccessService;
 
-    AccessService = function($cookies, ApiService, RequestService) {
-        this._token = undefined;
-        this._unauthedReason = undefined;
+    AccessService = function($cookies, $http, $q, $window, HostService) {
+        var service = this;
 
-        // --- SessionCache {{{
+        // --- Service Constants {{{
+        service.Unauthorized = 'Unauthorized';
+        // --- }}}
 
-        this.cacheToken = function(token) {
-            this._token = token;
-            $cookies.set(ElosAuthToken, token);
-        };
+        // --- Cookies & Caching {{{
 
-        this.getCachedToken = function() {
-            if (this._token) {
-                return this._token;
+        function rememberToken(token) {
+            service._token = token;
+            try {
+                $cookies[TokenCookie] = token;
+            } catch (ignore) {
+                // pass
+            }
+        }
+
+        function recallToken() {
+            // get cookie
+            var cookie = $cookies[TokenCookie];
+
+            if (cookie === '') {
+                service._token = undefined;
+            } else {
+                service._token = cookie;
             }
 
-            var token = $cookies.get(ElosAuthToken);
+            return service._token;
+        }
 
-            if (token === undefined || token === null || token === '') {
-                throw NoTokenError;
+        function forgetToken() {
+            service._token = undefined;
+            $cookies[TokenCookie] = '';
+        }
+
+        // --- }}}
+
+        // --- token() & isAuthenticated() {{{
+        this.token = function() {
+            if (service._token) {
+                return service._token;
             }
 
-            return token;
+            return recallToken();
         };
 
-        this.clearCachedSession = function() {
-            this._token = undefined;
-            $cookies.remove(ElosAuthToken);
+        this.isAuthenticated = function() {
+            return (!!this._token);
         };
 
         // --- }}}
 
-        this.authenticate = function(publicInfo, privateInfo) {
-            var token, success;
-
-            try {
-                token = this.getCachedToken();
-            } catch (NoTokenError) {
-                RequestService.POST(
-                    ApiService.url(
-                        "/sessions",
-                        {
-                         'public': publicInfo,
-                         'private': privateInfo
-                        }
-                    ),
-                    {}
-                ).then(
-                    function(response) {
-                        token = response.data.data.session.token;
-                        success = true;
-                    },
-                    function(response) {
-                        AccessService._unauthedReason = response.data.message;
-                        success = false;
-                    }
-                );
-            }
-
-            if (success) {
-                this.cacheToken(token);
-            }
-
-            return success;
+        // --- Login/Logout {{{
+        this.login = function(publicCredential, privateCredential) {
+            return $http({
+                method: 'POST',
+                url: HostService.url('/sessions'),
+                params: {
+                    'public': publicCredential,
+                    'private': privateCredential
+                }
+            }).success(function (response) {
+                rememberToken(response.data.session.token);
+            });
         };
 
-        this.authenticated = function() {
-            return this._token !== undefined && this._token !== null && this._token !== '';
-        };
+        this.logout = function() {
+            // Clear out session
+            forgetToken();
 
-        this.unauthedReason = function() {
-            return this._unauthedReason || '';
+            // Reload for fresh data
+            $window.location = "./";
         };
+        // --- }}}
 
+        // --- Route resolve: 'authenticate' {{{
+        this.authenticate = function() {
+            return $q(function(resolve, reject) {
+                var presentToken = service.token();
+
+                if (presentToken) {
+                    resolve(presentToken);
+                }
+
+                reject(service.Unauthorized);
+            });
+        };
+        // --- }}}
+
+        // --- Initialization {{{
+        function init() {
+            service._token = recallToken();
+        }
+
+        init();
+        // --- }}}
     };
 
-    AccessService.$inject = [ '$cookies', 'ApiService', 'RequestService' ];
+    AccessService.$inject = [ '$cookies', '$http', '$q', '$window', 'HostService' ];
 
     return AccessService;
 }());

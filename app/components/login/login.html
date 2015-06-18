@@ -1,20 +1,16 @@
 <!-- Header {{{ -->
-<div class="login-header">
+<div class="login-header-{{theme}}">
     <h1 class="login-elos-header"> elos </h1>
 </div>
 <!-- }}} -->
 
 <!-- Content {{{ -->
-<div class="login-content">
-    <h1 class="login-title"> Sign In </h1>
-    <section class="login-card">
-        <p class="login-error"
-           data-ng-bind="states.error.text"
-           > </p>
-        <br />
+<div class="login-content-{{theme}}">
+    <h1 class="login-title-{{theme}}"> Sign In </h1>
+    <section class="login-card-{{theme}}">
         <input type="text"
                id="public-credential"
-               class="login-input"
+               class="login-input-{{theme}}"
                placeholder="Public credential"
                autocorrect="off"
                autocomplete="off"
@@ -26,7 +22,7 @@
         <br />
         <input type="text"
                id="private-credential"
-               class="login-input"
+               class="login-input-{{theme}}"
                placeholder="Private credential"
                autocorrect="off"
                autocomplete="off"
@@ -36,11 +32,16 @@
                data-ng-keyup="handlers.keyUp($event, publicCredential, privateCredential)"
                />
         <p class="login-continue-button"
-           data-ng-show="states.canSubmit"
+           data-ng-class="{'disabled': !states.canSubmit}"
            data-ng-click="handlers.submit(publicCredential, privateCredential)"
            >
-            Continue
+            Start
         </p>
     </section>
+    <p class="login-error"
+       data-ng-bind="states.error.text"
+       data-ng-show="states.error.visible"
+       >
+    </p>
 </div>
 <!-- }}} -->

@@ -1,0 +1,23 @@
+// Disable VendorPrefix linting because we need
+// an input-placeholder and compass's default
+// didn't work:
+// http://compass-style.org/reference/compass/css3/user_interface/
+@mixin input-placeholder {
+  // scss-lint:disable VendorPrefix
+  &::-webkit-input-placeholder {
+    @content
+  }
+
+  &::-moz-placeholder {
+    opacity: 1;
+    @content
+  }
+
+  &::-moz-placeholder {
+    @content
+  }
+
+  &:-ms-input-placeholder {
+    @content
+  }
+}
