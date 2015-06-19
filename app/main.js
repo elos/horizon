@@ -33,7 +33,12 @@
             $routeProvider
                 .when('/', {
                     templateUrl: './app/components/home/home.html',
-                    controller: 'HomeController'
+                    controller: 'HomeController',
+                    resolve: {
+                        session: [ 'AccessService', function (AccessService) {
+                            return AccessService.authenticate();
+                        } ]
+                    }
                 })
                 .when('/login', {
                     templateUrl: './app/components/login/login.html',
@@ -43,6 +48,14 @@
                     redirectTo: '/'
                 });
             // --- }}}
+    } ]);
+
+    app.run([ '$rootScope', '$location', function ($rootScope, $location) {
+        $rootScope.$on('$routeChangeError', function (event, current, previous, eventObj) {
+            if (eventObj === 'Unauthorized') {
+                $location.path('/login');
+            }
+        });
     } ]);
 
     app.run([ '$rootScope', 'TimeService', function($rootScope, TimeService) {
