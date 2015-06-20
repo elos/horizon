@@ -40,7 +40,10 @@ module.exports = (function () {
             },
 
             selectMonth: function (month) {
-                console.log(month);
+                $route.updateParams({
+                    selector: MonthSelector,
+                    index: month,
+                });
             },
 
             selectYearday: function (yearday) {
@@ -64,7 +67,8 @@ module.exports = (function () {
         };
         // --- }}}
 
-        // --- Default Options {{{
+        // --- Options {{{
+        // --- Basic (Default) {{{
         controller.DefaultOptions =  [
             {
                 title: 'Base',
@@ -79,6 +83,7 @@ module.exports = (function () {
                 click: $scope.handlers.selectYearly
             }
         ];
+        // --- }}}
 
         // --- Weekday {{{
         controller.WeekdayOptions = [
@@ -144,6 +149,28 @@ module.exports = (function () {
             });
         }
         // --- }}}
+
+        // --- MonthDay {{{
+        function yeardaySelector(month, day) {
+            return function () {
+                $scope.handlers.selectYearday(TimeService.Yearday(month, day));
+            };
+        }
+
+        controller.MonthDayOptions = function (month) {
+            var opts = [],
+                j;
+
+            for (j = 1; j < TimeService.DaysInMonth[month] + 1; j += 1) {
+                opts.push({
+                    title: j,
+                    click: yeardaySelector(month, j)
+                });
+            }
+
+            return opts;
+        };
+        // --- }}}
         // --- }}}
 
         // --- Initialization {{{
@@ -152,6 +179,12 @@ module.exports = (function () {
                 $scope.states.options = controller.WeekdayOptions;
             } else if ($routeParams.selector === YearlySelector) {
                 $scope.states.options = controller.MonthOptions;
+            } else if ($routeParams.selector === MonthSelector) {
+                if ($routeParams.index) {
+                    $scope.states.options = controller.MonthDayOptions($routeParams.index);
+                } else {
+                    $route.updateParams({ selector: YearlySelector });
+                }
             } else {
                 $scope.states.options = controller.DefaultOptions;
             }

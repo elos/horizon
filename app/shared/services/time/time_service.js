@@ -16,7 +16,6 @@ module.exports = (function() {
         };
 
         // hmm.. I wonder why enums were invented.... oh js...
-
         // --- Weekdays {{{
         service.Sunday = 0;
         service.Monday = 1;
@@ -44,6 +43,25 @@ module.exports = (function() {
         service.November = 11;
         service.December = 12;
         // --- }}}
+
+        service.Yearday = function (month, day) {
+            return (month * 100) + day;
+        };
+
+        service.DaysInMonth = {
+            1: 31,
+            2: 29,
+            3: 31,
+            4: 31,
+            5: 31,
+            6: 31,
+            7: 31,
+            8: 31,
+            9: 31,
+            10: 31,
+            11: 31,
+            12: 31
+        };
     };
 
     return TimeService;
