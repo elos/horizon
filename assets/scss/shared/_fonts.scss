@@ -7,4 +7,12 @@
   font-style: normal;
 }
 
-$avenir-stack: 'AvenirNextRegular', Helvetica, sans-serif;
+@font-face {
+  font-family: 'AvenirNextUltraLight';
+  src: url('../../../assets/fonts/avenirnext/AvenirNext-UltraLight.woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$avenir-stack: AvenirNextRegular, Helvetica, sans-serif;
+$avenir-light-stack: AvenirNextUltraLight, Helvetica, sans-serif;

@@ -9,19 +9,7 @@
 
 @import './shared/fonts';
 
-@mixin body {
+body {
+  background-color: $white-off;
   font-family: $avenir-stack;
-
-}
-
-.body-light {
-  @include body;
-
-  background-color: $dream;
-}
-
-.body-dark {
-  @include body;
-
-  background-color: $nack;
 }

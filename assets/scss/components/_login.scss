@@ -1,35 +1,30 @@
 @import '../shared/colors';
 @import '../shared/fonts';
 @import '../shared/mixins';
+@import '../../../bower_components/compass-mixins/lib/compass/css3/appearance';
 
 // --- Variables {{{
-$login-header-height: 40px;
+$login-header-height: 50px;
+$login-form-width: 60%;
+$login-form-margin-top: 16px;
 // --- }}}
 
 // --- Header {{{
 
-// structural components
-@mixin login-header {
+// structural component
+.login-header {
+  background-color: $white-off;
   height: $login-header-height;
   line-height: $login-header-height;
 }
 
-.login-header-light {
-  @include login-header;
-
-  background-color: $dream;
-}
-
-.login-header-dark {
-  @include login-header;
-
-  background-color: $nack;
-}
-
+// textual component
 .login-elos-header {
-  color: $eleen;
-  font-family: $avenir-stack;
+  color: $black;
+  font-family: $avenir-light-stack;
+  font-size: 14px;
   height: inherit;
+  letter-spacing: 1px;
   line-height: inherit;
   text-align: center;
   width: 100%;
@@ -37,107 +32,79 @@ $login-header-height: 40px;
 // --- }}}
 
 // --- Content {{{
-@mixin login-content {
-}
-
-.login-content-light {
-  @include login-content;
-
-  background-color: $dream;
-}
-
-.login-content-dark {
-  @include login-content;
-
-  background-color: $nack;
+.login-content {
+  margin-top: 100px;
 }
 // --- }}}
 
-// --- Headers {{{
-@mixin login-title {
-  margin-top: 100px;
-  text-align: center;
+// --- Titles {{{
+.login-title {
+  border-bottom: 2px solid $grey-light;
+  color: $grey;
+  font-size: 18px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  text-align: left;
   width: 100%;
-}
-
-.login-title-light {
-  @include login-title;
-
-  color: $nack;
-}
-
-.login-title-dark {
-  @include login-title;
-
-  color: $dream;
 }
 // --- }}}
 
 // --- Card {{{
-@mixin login-card {
-  border: 1px solid $nack;
+.login-card {
+  @include box-shadow(rgba($black, .1) 0 2px 6px 0);
+
+  background: $white;
+  border: 1px solid $grey-light;
   margin-top: 20px;
-  padding: 40px;
-  padding-bottom: 50px;
-  text-align: center;
+  padding: 44px;
 }
 
-.login-card-light {
-  @include login-card;
-
-  background-color: $white;
-}
-
-.login-card-dark {
-  @include login-card;
-
-  background-color: $dream;
+.login-card-content {
+  margin-left: auto;
+  margin-right: auto;
+  width: $login-form-width;
 }
 // --- }}}
 
 // --- Inputs {{{
-@mixin login-input {
+.login-input {
+  @include box-shadow(inset 0 1px 3px 0 rgba($black, .2));
+
   background: none;
   background-color: $white-grey;
   border: 1px solid $grey;
-  border-radius: 7px;
-  color: $nack;
-  font-size: 20px;
-  margin-top: 20px;
+  border-radius: 8px;
+  color: $black;
+  font-size: 16px;
+  margin-top: $login-form-margin-top;
   outline: 0;
-  padding: 10px;
-  width: 50vw;
+  padding: 14px;
+  width: calc(100% - 28px);
 
   @include input-placeholder {
-    color: $grey-light;
+    color: $grey;
     font-family: $avenir-stack;
   };
-}
-
-.login-input-light {
-  @include login-input;
-}
-
-.login-input-dark {
-  @include login-input;
 }
 // --- }}}
 
 // --- Buttons {{{
-.login-continue-button {
-  background-color: rgba($eleen, .2);
-  border: 1px solid $eleen;
-  border-radius: 50%;
-  color: $eleen;
+.login-start-button {
+  @include box-shadow(rgba($black, .2) 0 -1px 3px 0 inset);
+
+  background-color: $eleen;
+  border-radius: 8px;
+  color: $white;
   cursor: pointer;
   font-size: 16px;
-  height: 80px;
-  line-height: 80px;
+  height: 26px;
+  line-height: 26px;
   margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
+  margin-right: 0;
+  margin-top: $login-form-margin-top;
   padding: 5px;
-  width: 80px;
+  text-align: center;
+  width: 105px;
 
   &.disabled {
     opacity: .5;
@@ -151,10 +118,10 @@ $login-header-height: 40px;
   border: 1px solid $red;
   border-radius: 7px;
   color: $red;
-  font-size: 20px;
+  font-size: 16px;
   margin: 20px auto;
-  padding: 10px;
+  padding: 14px;
   text-align: center;
-  width: 50vw;
+  width: calc(60% - 28px - 88px);
 }
 // --- }}}
