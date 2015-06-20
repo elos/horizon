@@ -43,7 +43,7 @@ module.exports = (function() {
         // --- }}}
 
         // --- token() & isAuthenticated() {{{
-        this.token = function() {
+        this.token = function () {
             if (service._token) {
                 return service._token;
             }
@@ -51,10 +51,19 @@ module.exports = (function() {
             return recallToken();
         };
 
-        this.isAuthenticated = function() {
+        this.isAuthenticated = function () {
             return (!!this._token);
         };
 
+        this.session = function () {
+            return $http({
+                method: 'GET',
+                url: HostService.url('/sessions'),
+                headers: {
+                    'Elos-Auth': service.token()
+                }
+            });
+        };
         // --- }}}
 
         // --- Login/Logout {{{

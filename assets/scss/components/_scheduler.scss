@@ -1,0 +1,21 @@
+@import '../shared/colors'; // $white-off, $black
+@import '../shared/fonts'; // $avenir-light-stack
+
+.scheduling {
+  .header {
+    background-color: $white-off;
+    height: $login-header-height;
+    line-height: $login-header-height;
+
+    .elos {
+      color: $black;
+      font-family: $avenir-light-stack;
+      font-size: 14px;
+      height: inherit;
+      letter-spacing: 1px;
+      line-height: inherit;
+      text-align: center;
+      width: 100%;
+    }
+  }
+}
