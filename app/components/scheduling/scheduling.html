@@ -10,10 +10,12 @@
         <div class="content">
             <h1 class="title"> Scheduling </h1>
             <div class="options">
-                 <div class="option {{ styles.bubbleSize }}"
-                      data-ng-repeat="option in options"
+                 <div class="option {{ helpers.bubbleSize() }}"
+                      data-ng-repeat="option in states.options"
                       >
-                    <div class="bubble">
+                    <div class="bubble"
+                         data-ng-click="option.click()"
+                         >
                         <h2 class="option-title"> {{option.title}} </h2>
                     </div>
                 </div>

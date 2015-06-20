@@ -42,20 +42,28 @@
           }
 
           &.medium {
-            width: calc(100% / 5);
+            height: 100px;
+            line-height: 100px;
+            width: 100px;
           }
 
           &.small {
-            width: calc(100% / 10);
+            height: 80px;
+            line-height: 80px;
+            width: 80px;
+
+            > .bubble > .option-title {
+              font-size: 14px;
+            }
           }
 
           > .bubble {
             @include box-shadow(inset 0 -1px 3px 0 rgba($black, .2));
 
-            cursor: pointer;
             background-color: $grey-lighter;
             border: 1px solid $grey;
             border-radius: 50%;
+            cursor: pointer;
             height: 100%;
             width: 100%;
           }

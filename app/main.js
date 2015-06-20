@@ -40,7 +40,7 @@
                         } ]
                     }
                 })
-                .when('/scheduling', {
+                .when('/scheduling/:selector?', {
                     templateUrl: './app/components/scheduling/scheduling.html',
                     controller: 'SchedulingController',
                     resolve: {
