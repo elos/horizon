@@ -1,0 +1,31 @@
+// compass imports
+@import '../../../bower_components/compass-mixins/lib/compass/css3/appearance'; // box-shadow
+// horizon imports
+@import '../shared/colors'; // $white, $grey-light
+
+@mixin card($padding: 44px, $content-width: 60%) {
+  @include box-shadow(rgba($black, .1) 0 2px 6px 0);
+
+  background: $white;
+  border: 1px solid $grey-light;
+  margin-top: 20px;
+  padding: $padding;
+
+  > .content {
+    margin-left: auto;
+    margin-right: auto;
+    width: $content-width;
+
+    > .title {
+      border-bottom: 2px solid $grey-light;
+      color: $grey;
+      font-size: 18px;
+      padding-bottom: 8px;
+      padding-left: 5px;
+      text-align: left;
+      width: 100%;
+    }
+
+    @content
+  }
+}

@@ -40,6 +40,15 @@
                         } ]
                     }
                 })
+                .when('/scheduling', {
+                    templateUrl: './app/components/scheduling/scheduling.html',
+                    controller: 'SchedulingController',
+                    resolve: {
+                        session: [ 'AccessService', function (AccessService) {
+                            return AccessService.authenticate();
+                        } ]
+                    }
+                })
                 .when('/login', {
                     templateUrl: './app/components/login/login.html',
                     controller: 'LoginController'
@@ -70,6 +79,7 @@
   // --- Configure Controllers {{{
   app.controller('HomeController', require('./components/home/home_controller'));
   app.controller('LoginController', require('./components/login/login_controller'));
+  app.controller('SchedulingController', require('./components/scheduling/scheduling_controller'));
   // --- }}}
 
   // --- Configure Services {{{
