@@ -24,10 +24,20 @@ module.exports = (function() {
         service.Thursday = 4;
         service.Friday = 5;
         service.Saturday = 6;
+
+        service.Weekdays = {
+            0: 'Sunday',
+            1: 'Monday',
+            2: 'Tuesday',
+            3: 'Wednesday',
+            4: 'Thursday',
+            5: 'Friday',
+            6: 'Saturday'
+        };
         // --- }}}
 
         // --- Months {{{
-        service.Months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+        service.Months = [ '-', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
                            'September', 'October', 'November', 'December' ];
 
         service.January = 1;
@@ -46,6 +56,29 @@ module.exports = (function() {
 
         service.Yearday = function (month, day) {
             return (month * 100) + day;
+        };
+
+        service.numSuffixes = {
+            1: "st",
+            2: "nd",
+            3: "rd",
+            4: "th",
+            5: "th",
+            6: "th",
+            7: "th",
+            8: "th",
+            9: "th",
+            0: "th"
+        };
+
+        service.YeardayString = function (yearday) {
+            if (typeof yearday === 'string') {
+                yearday = parseInt(yearday, 10);
+            }
+
+            console.log(yearday);
+
+            return service.Months[Math.floor(yearday / 100)] + ' ' + yearday % 100 + service.numSuffixes[yearday % 10];
         };
 
         service.DaysInMonth = {

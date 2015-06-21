@@ -9,7 +9,8 @@ module.exports = (function() {
             'session': 'sessions',
             'credential': 'credentials',
             'calendar': 'calendars',
-            'user': 'users'
+            'user': 'users',
+            'schedule': 'schedules'
         };
 
         service.kind = function (kind) {

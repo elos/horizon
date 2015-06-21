@@ -3,7 +3,7 @@ module.exports = (function() {
 
     var ModelsService;
 
-    ModelsService = function($http, $q, AccessService, HostService) {
+    ModelsService = function($http, $q, AccessService, HostService, TimeService) {
         var service = this;
 
         service.kinds = [ 'person', 'session', 'credential', 'calendar' ];
@@ -88,31 +88,43 @@ module.exports = (function() {
                     var person = this;
 
                     return $q(function(resolve, reject) {
-                        var calendar = service.newCalendar();
-
                         if (person.relations.calendar) {
                             resolve(person.relations.calendar);
                             return;
                         }
 
-                        DataService.kind(calendar.kind).find(person.calendar_id).then(
-                                function (response) {
-                                    calendar.load(response.data.data[calendar.kind]);
+                        var calendar = service.newCalendar();
 
+                        if (!person.calendar_id) {
+                            calendar.save(DataService).then(
+                                function (calendar) {
                                     person.relations.calendar = calendar;
-                                    calendar.relations.person = person;
-
                                     resolve(calendar);
                                 },
-                                function (response) {
-                                    reject(response.data.developer_message);
+                                function (error) {
+                                    reject(error);
                                 }
-                        );
+                            );
+                        } else {
+                            DataService.kind(calendar.kind).find(person.calendar_id).then(
+                                    function (response) {
+                                        calendar.load(response.data.data[calendar.kind]);
+
+                                        person.relations.calendar = calendar;
+                                        calendar.relations.person = person;
+
+                                        resolve(calendar);
+                                    },
+                                    function (response) {
+                                        reject(response.data.developer_message);
+                                    }
+                            );
+                        }
                     });
                 },
 
                 save: function (DataService) {
-                    DataService.kind(this.kind).save(this.toJSON());
+                    return DataService.kind(this.kind).save(this.toJSON());
                 },
 
                 load: function (json) {
@@ -231,13 +243,124 @@ module.exports = (function() {
 
                         var schedule = service.newSchedule();
 
-                        DataService.kind(schedule.kind).find(calendar.base_schedule_id).then(
+                        if (!calendar.base_schedule_id) {
+                            schedule.name = "Base Schedule";
+                            schedule.save(DataService).then(
+                                function (schedule) {
+                                    calendar.relations.base_schedule = schedule;
+
+                                    resolve(schedule);
+                                },
+                                function (error) {
+                                    reject(error);
+                                }
+                            );
+                        } else {
+                            DataService.kind(schedule.kind).find(calendar.base_schedule_id).then(
+                                function (response) {
+                                    schedule.load(response.data.data[schedule.kind]);
+
+                                    calendar.relations.base_schedule = schedule;
+
+                                    resolve(schedule);
+                                },
+                                function (response) {
+                                    reject(response.data.developer_message);
+                                }
+                            );
+                        }
+                    });
+                },
+                // --- }}}
+
+                // --- weekday schedule {{{
+                weekday_schedule: function (DataService, weekday) {
+                    var calendar = this;
+
+                    return $q(function (resolve, reject) {
+
+                        var schedule = service.newSchedule();
+
+                        if (!calendar.weekday_schedules[weekday]) {
+                            schedule.name = "Weekday Schedule for " + TimeService.Weekdays[weekday];
+                            schedule.save(DataService).then(
+                                function (schedule) {
+                                    calendar.reload(DataService).then(
+                                        function () {
+                                            resolve(schedule);
+                                        },
+                                        function (error) {
+                                            reject(error);
+                                        }
+                                    );
+                                },
+                                function (error) {
+                                    reject(error);
+                                }
+                            );
+                        } else {
+                            DataService.kind(schedule.kind).find(calendar.weekday_schedules[weekday]).then(
+                                function (response) {
+                                    schedule.load(response.data.data[schedule.kind]);
+                                    resolve(schedule);
+                                },
+                                function (response) {
+                                    reject(response.data.developer_message);
+                                }
+                            );
+                        }
+
+                    });
+                },
+                // --- }}}
+
+                // --- yearday_schedule
+                yearday_schedule: function (DataService, yearday) {
+                    var calendar = this;
+
+                    return $q(function (resolve, reject) {
+                        var schedule = service.newSchedule();
+
+                        if (!calendar.yearday_schedules[yearday]) {
+                            schedule.name = "Yearday Schedule for " + TimeService.YeardayString(yearday);
+                            schedule.save(DataService).then(
+                                function (schedule) {
+                                    calendar.reload(DataService).then(
+                                        function () {
+                                            resolve(schedule);
+                                        },
+                                        function (error) {
+                                            reject(error);
+                                        }
+                                    );
+                                },
+                                function (error) {
+                                    reject(error);
+                                }
+                            );
+                        } else {
+                            service.FindSchedule(calendar.yearday_schedules[yearday], DataService).then(
+                                function (schedule) {
+                                    resolve(schedule);
+                                },
+                                function (error) {
+                                    reject(error);
+                                }
+                            );
+                        }
+                    });
+                },
+
+                // -- States {{{
+
+                save: function (DataService) {
+                    var calendar = this;
+
+                    return $q(function (resolve, reject) {
+                        DataService.kind(calendar.kind).save(calendar.toJSON()).then(
                             function (response) {
-                                schedule.load(response.data.data[schedule.kind]);
-
-                                calendar.relations.base_schedule = schedule;
-
-                                resolve(schedule);
+                                calendar.load(response.data.data[calendar.kind]);
+                                resolve(calendar);
                             },
                             function (response) {
                                 reject(response.data.developer_message);
@@ -245,7 +368,26 @@ module.exports = (function() {
                         );
                     });
                 },
-                // --- }}}
+
+                reload: function (DataService) {
+                    var calendar = this;
+
+                    if (!calendar.id) {
+                        return $q(function (r) { r(calendar); });
+                    }
+
+                    return $q(function (resolve, reject) {
+                        DataService.kind(calendar.kind).find(calendar.id).then(
+                            function (response) {
+                                calendar.load(response.data.data[calendar.kind]);
+                                resolve(calendar);
+                            },
+                            function (response) {
+                                reject(response.data.developer_message);
+                            }
+                        );
+                    });
+                },
 
                 load: function (json) {
                     this.id = json.id || this.id;
@@ -261,7 +403,24 @@ module.exports = (function() {
                     this.relations.owner = undefined;
                     this.relations.person = undefined;
                     this.relations.base_schedule = undefined;
+                },
+
+                toJSON: function () {
+                    var calendar = this;
+
+                    return {
+                        id: calendar.id,
+                        created_at: calendar.created_at,
+                        updated_at: calendar.updated_at,
+                        owner_id: calendar.owner_id,
+                        person_id: calendar.person_id,
+                        base_schedule_id: calendar.base_schedule_id,
+                        weekday_schedules: calendar.weekday_schedules,
+                        yearday_schedules: calendar.yearday_schedules
+                    };
                 }
+
+                // --- }}}
             };
         };
         //  --- }}}
@@ -327,6 +486,37 @@ module.exports = (function() {
                 },
                 // --- }}}
 
+                save: function (DataService) {
+                    var schedule = this;
+
+                    return $q(function (resolve, reject) {
+                        DataService.kind(schedule.kind).save(schedule.toJSON()).then(
+                            function (response) {
+                                schedule.load(response.data.data[schedule.kind]);
+                                resolve(schedule);
+                            },
+                            function (response) {
+                                reject(response.data.developer_message);
+                            }
+                        );
+                    });
+                },
+
+                toJSON: function () {
+                    var schedule = this;
+
+                    return {
+                        id: schedule.id,
+                        created_at: schedule.created_at,
+                        updated_at: schedule.updated_at,
+                        name: schedule.name,
+                        start_time: schedule.start_time,
+                        end_time: schedule.end_time,
+                        owner_id: schedule.owner_id,
+                        fixtures_ids: schedule.fixtures_ids
+                    };
+                },
+
                 load: function (json) {
                     this.id = json.id || this.id;
                     this.created_at = json.created_at || this.created_at;
@@ -383,6 +573,8 @@ module.exports = (function() {
         // --- New Session {{{
         service.newSession = function () {
             return {
+                kind: 'session',
+
                 id: '',
                 created_at: new Date(),
                 updated_at: new Date(),
@@ -433,6 +625,22 @@ module.exports = (function() {
         };
         // --- }}}
 
+        service.FindSchedule = function (id, DataService) {
+            var schedule = service.newSchedule();
+
+            return $q(function (resolve, reject) {
+                DataService.kind(schedule.kind).find(id).then(
+                    function (response) {
+                        schedule.load(response.data.data[schedule.kind]);
+                        resolve(schedule);
+                    },
+                    function (response) {
+                        reject(response.data.developer_message);
+                    }
+                );
+            });
+        };
+
         service.session = function () {
             return $q(function(resolve, reject) {
                 AccessService.session().then(
@@ -449,7 +657,7 @@ module.exports = (function() {
         };
     };
 
-    ModelsService.$inject = [ '$http', '$q', 'AccessService', 'HostService' ];
+    ModelsService.$inject = [ '$http', '$q', 'AccessService', 'HostService', 'TimeService' ];
 
     return ModelsService;
 }());

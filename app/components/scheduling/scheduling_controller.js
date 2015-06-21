@@ -4,7 +4,7 @@ module.exports = (function () {
         MonthSelector = 'monthly',
         YearlySelector = 'yearly';
 
-    SchedulingController = function ($scope, $route, $routeParams, TimeService) {
+    SchedulingController = function ($scope, $location, $route, $routeParams, DataService, TimeService, ModelsService) {
         var controller = this,
             i,
             monthName;
@@ -24,7 +24,31 @@ module.exports = (function () {
         // --- Handlers {{{
         $scope.handlers = {
             selectBase: function () {
-                console.log('base');
+                ModelsService.session().then(
+                    function (session) {
+                        return session.owner(DataService);
+                    }
+                ).then(
+                    function (user) {
+                        return user.person(DataService);
+                    }
+                ).then(
+                    function (person) {
+                        return person.calendar(DataService);
+                    }
+                ).then(
+                    function (calendar) {
+                        return calendar.base_schedule(DataService);
+                    }
+                ).then(
+                    function (schedule) {
+                        $location.path("/scheduler/" + schedule.id);
+                    }
+                ).catch(
+                    function (error) {
+                        console.log(error);
+                    }
+                );
             },
 
             selectWeekly: function () {
@@ -36,7 +60,32 @@ module.exports = (function () {
             },
 
             selectWeekday: function (weekday) {
-                console.log(weekday);
+                ModelsService.session().then(
+                    function (session) {
+                        return session.owner(DataService);
+                    }
+                ).then(
+                    function (user) {
+                        return user.person(DataService);
+                    }
+                ).then(
+                    function (person) {
+                        return person.calendar(DataService);
+                    }
+                ).then(
+                    function (calendar) {
+                        return calendar.weekday_schedule(DataService, weekday);
+                    }
+                ).then(
+                    function (schedule) {
+                        $location.path("/scheduler/" + schedule.id);
+
+                    }
+                ).catch(
+                    function (error) {
+                        console.log(error);
+                    }
+                );
             },
 
             selectMonth: function (month) {
@@ -47,7 +96,32 @@ module.exports = (function () {
             },
 
             selectYearday: function (yearday) {
-                console.log(yearday);
+                ModelsService.session().then(
+                    function (session) {
+                        return session.owner(DataService);
+                    }
+                ).then(
+                    function (user) {
+                        return user.person(DataService);
+                    }
+                ).then(
+                    function (person) {
+                        return person.calendar(DataService);
+                    }
+                ).then(
+                    function (calendar) {
+                        return calendar.yearday_schedule(DataService, yearday);
+                    }
+                ).then(
+                    function (schedule) {
+                        $location.path("/scheduler/" + schedule.id);
+
+                    }
+                ).catch(
+                    function (error) {
+                        console.log(error);
+                    }
+                );
             }
         };
         // --- }}}
@@ -140,7 +214,7 @@ module.exports = (function () {
         }
 
         controller.MonthOptions = [];
-        for (i = 0; i < TimeService.Months.length; i += 1) {
+        for (i = 1; i < TimeService.Months.length; i += 1) {
             monthName = TimeService.Months[i];
 
             controller.MonthOptions.push({
@@ -194,8 +268,8 @@ module.exports = (function () {
         // --- }}}
     };
 
-    SchedulingController.$inject = [ '$scope', '$route', '$routeParams',
-                                     'TimeService' ];
+    SchedulingController.$inject = [ '$scope', '$location', '$route', '$routeParams', 'DataService',
+                                     'TimeService', 'ModelsService' ];
 
     return SchedulingController;
 }());

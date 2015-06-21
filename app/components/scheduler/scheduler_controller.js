@@ -1,7 +1,7 @@
 module.exports = (function () {
     var SchedulerController;
 
-    SchedulerController = function ($scope, $location, DataService, ModelsService) {
+    SchedulerController = function ($scope, $location, $routeParams, DataService, ModelsService) {
         $scope.states = {
             schedule: {
                 title: ''
@@ -96,47 +96,31 @@ module.exports = (function () {
             }
         ];
 
+        // --- Initialization {{{
         function init() {
-            $scope.states.schedule.title = "Base Schedule";
+            if (!$routeParams.schedule_id) {
+                $location.path('scheduling');
+            }
+
+            ModelsService.FindSchedule($routeParams.schedule_id, DataService).then(
+                function (schedule) {
+                    $scope.states.schedule.title = schedule.name;
+                },
+                function (error) {
+                    console.log(error);
+                    $location.path('scheduling');
+                }
+            );
+
             $scope.states.detail.title = "Lorem Ipsum";
             $scope.states.detail.visible = false;
         }
 
         init();
-
-        console.log(ModelsService);
-        ModelsService.session().then(
-            function (session) {
-                console.log(session);
-
-                return session.owner(DataService);
-            },
-            function (reason) {
-                console.log(reason);
-            }
-        /*
-        ).then(
-            function (owner) {
-                console.log(owner);
-
-                var person = ModelsService.newPerson();
-                person.name = "Test From Browser";
-                person.owner_id = owner.id;
-                return person.save(DataService);
-            }
-        */
-        ).then(
-            function (owner) {
-                return owner.person(DataService);
-            }
-        ).then(
-            function (person) {
-                console.log(person);
-            }
-        );
+        // --- }}}
     };
 
-    SchedulerController.$inject = [ '$scope', '$location', 'DataService', 'ModelsService' ];
+    SchedulerController.$inject = [ '$scope', '$location', '$routeParams', 'DataService', 'ModelsService' ];
 
     return SchedulerController;
 }());

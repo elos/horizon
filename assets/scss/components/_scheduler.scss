@@ -132,7 +132,7 @@
   // --- Side Buttons {{{
   @mixin side-button {
     cursor: pointer;
-    position: absolute;
+    position: fixed;
     top: 50%;
     width: 100px;
   }
