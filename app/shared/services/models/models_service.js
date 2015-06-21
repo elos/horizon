@@ -145,6 +145,8 @@ module.exports = (function() {
         //  --- New Calendar {{{
         service.newCalendar = function () {
             return {
+                kind: 'calendar',
+
                 id: '',
                 created_at: new Date(),
                 updated_at: new Date(),
@@ -267,10 +269,113 @@ module.exports = (function() {
         // --- New Schedule {{{
         service.newSchedule = function () {
             return {
+                kind: 'schedule',
+
                 id: '',
                 created_at: new Date(),
                 updated_at: new Date(),
-                name: ''
+                name: '',
+                start_time: new Date(),
+                end_time: new Date(),
+                owner_id: '',
+                fixtures_ids: [],
+
+                relations: {
+                    owner: undefined,
+                    fixtures: undefined
+                },
+
+                // --- fixtures (DataService)  {{{
+                fixtures: function (DataService) {
+                    var schedule = this;
+
+                    return $q(function (resolve, reject) {
+                        if (schedule.relations.fixtures) {
+                            resolve(schedule.relations.fixtures);
+                            return;
+                        }
+
+                        var fixtures = [],
+                            fixture_id,
+                            fixture,
+                            i,
+                            promises = [];
+
+                        for (i = 0; i < schedule.fixtures_ids.length; i += 1) {
+                            fixture_id = schedule.fixtures_ids[i];
+                            promises.push(DataService.kind(fixture.kind).find(fixture_id));
+                        }
+
+                        $q.all(promises).then(
+                            function (successResponses) {
+                                var j;
+
+                                for (j = 0; j < successResponses.length; j += 1) {
+                                    fixture = service.newFixture();
+                                    fixture.load(successResponses[j].data.data[fixture.kind]);
+
+                                    fixtures.push(fixture);
+                                }
+
+                                resolve(fixtures);
+                            },
+                            function (failureResponse) {
+                                reject(failureResponse.data.developer_message);
+                            }
+                        );
+                    });
+                },
+                // --- }}}
+
+                load: function (json) {
+                    this.id = json.id || this.id;
+                    this.created_at = json.created_at || this.created_at;
+                    this.updated_at = json.updated_at || this.updated_at;
+                    this.name = json.name || this.name;
+                    this.start_time = json.start_time || this.start_time;
+                    this.end_time = json.end_time || this.end_time;
+                    this.owner_id = json.owner_id || this.owner_id;
+                    this.fixtures_ids = json.fixtures_ids || this.fixtures_id;
+
+                    this.relations.owner = undefined;
+                    this.relations.fixtures = undefined;
+                }
+
+            };
+        };
+        // --- }}}
+
+        // --- New Fixture {{{
+        service.newFixture = function () {
+            return {
+                kind: 'fixture',
+
+                id: '',
+                created_at: new Date(),
+                updated_at: new Date(),
+                name: '',
+                start_time: new Date(0),
+                end_time: new Date(0),
+                description: '',
+                rank: 0,
+                label: false,
+                expires: new Date(0),
+                date_exceptions: [],
+                owner_id: '',
+
+                load: function (json) {
+                    var properties = [
+                        'id', 'created_at', 'updated_at', 'name',
+                        'start_time', 'end_time', 'description',
+                        'rank', 'label', 'expires', 'date_exceptions',
+                        'owner_id'
+                    ],
+                    fixture = this;
+
+                    angular.forEach(properties, function (property) {
+                        fixture[property] = json[property] || fixture[property];
+                    });
+                }
             };
         };
         // --- }}}
