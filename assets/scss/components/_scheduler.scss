@@ -1,7 +1,11 @@
 @import '../shared/colors'; // $white-off, $black
 @import '../shared/fonts'; // $avenir-light-stack
+@import '../mixins/card'; // card
 
-.scheduling {
+// scss-lint:disable SelectorDepth
+// scss-lint:disable NestingDepth
+
+.scheduler {
   .header {
     background-color: $white-off;
     height: $login-header-height;
@@ -18,4 +22,161 @@
       width: 100%;
     }
   }
+
+  .detail-card {
+    @include card($padding: 22px, $content-width: 100%);
+
+    float: left;
+    margin-left: 14%;
+    margin-right: 2%;
+    width: 30%;
+  }
+
+  // --- schedule card {{{
+  .schedule-card {
+    @include card(0, 100%);
+
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 800px;
+    width: 58%;
+
+    &.detail-visible {
+      float: left;
+      margin-left: 2%;
+      width: 28%;
+    }
+
+    .header {
+      background-color: $grey-lighter;
+      border: 1px solid $grey;
+      height: 34px;
+      line-height: 34px;
+      margin-top: -1px;
+      margin-left: -1px;
+      text-align: center;
+      width: 100%;
+
+      // scss-lint:disable NestingDepth
+      .title {
+        color: $black;
+        font-size: 12px;
+      }
+    }
+
+    .content {
+      max-height: 800px;
+      overflow-x: hide;
+      overflow-y: scroll;
+
+      .schedule {
+        position: relative;
+
+        .time-box {
+          border-bottom: 1px dashed $grey-fade;
+          height: 80px;
+
+          .time {
+            color: $grey-fade;
+            font-size: 10px;
+            left: 2px;
+            position: relative;
+            top: 68px;
+          }
+        }
+
+        .labels {
+          left: 0;
+          position: absolute;
+          top: 0;
+          width: 100%;
+
+          .label {
+            background-color: $turquoise;
+            border: 1px solid $grey;
+            border-radius: 4px;
+            float: left;
+            font-size: 12px;
+            margin: 4px;
+            padding: 6px;
+
+            .name {
+              color: $white;
+              text-align: center;
+            }
+          }
+
+        }
+
+        .element {
+          background-color: $white-grey;
+          border: 1px solid $grey;
+          margin-left: -1px;
+          position: absolute;
+          width: calc(100% - 2px);
+
+          .name {
+            color: $eleen;
+            font-size: 14px;
+            left: 10px;
+            position: relative;
+            top: 10px;
+          }
+        }
+      }
+    }
+  }
+
+  // --- }}}
+
+  // --- Side Buttons {{{
+  @mixin side-button {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: 100px;
+  }
+
+  @mixin button-icon {
+    height: 40px;
+    margin-bottom: 3px;
+    margin-left: 30px;
+    width: 40px;
+  }
+
+  @mixin button-label {
+    font-size: 10px;
+    color: $grey-fade;
+    text-align: center;
+  }
+
+  .back-button {
+    @include side-button;
+
+    left: calc(11% - 50px);
+
+    .icon {
+      @include button-icon;
+    }
+
+    .label {
+      @include button-label;
+    }
+  }
+
+  .add-button {
+    @include side-button;
+
+    right: calc(11% - 50px);
+
+    .icon {
+      @include button-icon;
+    }
+
+    .label {
+      @include button-label;
+    }
+  }
+
+  // --- }}}
 }

@@ -4,4 +4,69 @@
         <h1 class="elos"> ELOS </h1>
     </div>
     <!-- }}} -->
+
+    <div class="detail-card"
+         data-ng-show="states.detail.visible"
+        >
+        <div class="content">
+            <h2 class="title"> {{ states.detail.title }} </h2>
+        </div>
+    </div>
+
+    <div class="schedule-card"
+         data-ng-class="{'detail-visible': states.detail.visible}"
+        >
+        <div class="header">
+            <h2 class="title"> {{ states.schedule.title }} </h2>
+        </div>
+        <div class="content">
+            <div class="schedule">
+                <!-- Time Boxes {{{ -->
+                <div class="time-box"
+                     data-ng-repeat="timeBox in states.schedule.timeBoxes"
+                    >
+                    <p class="time">
+                        {{timeBox.time}}
+                    </p>
+                </div>
+                <!-- Time Boxes }}} -->
+
+                <!-- Labels {{{ -->
+                <div class="labels">
+                    <div class="label"
+                         data-ng-repeat="label in states.schedule.labels"
+                        >
+                        <p class="name">
+                            {{ label.name }}
+                        </p>
+                    </div>
+                </div>
+                <!-- Labels }}} -->
+
+                <!-- Elements {{{ -->
+                <div class="element"
+                     data-ng-repeat="element in states.schedule.elements"
+                     data-ng-style="element.style">
+                    <p class="name"> {{ element.name }} </p>
+                </div>
+                <!-- Elements }}} -->
+            </div>
+        </div>
+    </div>
+
+    <div class="back-button"
+         data-ng-click="handlers.Back()"
+         data-ng-hide="states.detail.visible"
+        >
+        <img class="icon" data-ng-src="./assets/img/buttons/back.png" alt="<" />
+        <p class="label"> Return to Schedules </p>
+    </div>
+
+    <div class="add-button"
+         data-ng-click="handlers.Add()"
+         data-ng-hide="states.detail.visible"
+        >
+        <img class="icon" data-ng-src="./assets/img/buttons/plus.png" alt="+" />
+        <p class="label"> Add Fixture </p>
+    </div>
 </section>
