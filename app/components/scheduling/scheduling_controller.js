@@ -122,6 +122,11 @@ module.exports = (function () {
                         console.log(error);
                     }
                 );
+            },
+
+            selectToday: function () {
+                var d = new Date();
+                $scope.handlers.selectYearday(TimeService.Yearday(d.getMonth() + 1, d.getDate()));
             }
         };
         // --- }}}
@@ -129,7 +134,7 @@ module.exports = (function () {
         // --- Helpers {{{
         $scope.helpers = {
             bubbleSize: function() {
-                if ($scope.states.options.length < 4) {
+                if ($scope.states.options.length < 5) {
                     return 'large';
                 }
                 if ($scope.states.options.length < 10) {
@@ -155,6 +160,10 @@ module.exports = (function () {
             {
                 title: 'Yearly',
                 click: $scope.handlers.selectYearly
+            },
+            {
+                title: 'Today',
+                click: $scope.handlers.selectToday
             }
         ];
         // --- }}}

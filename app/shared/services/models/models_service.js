@@ -461,6 +461,7 @@ module.exports = (function() {
                             promises = [];
 
                         for (i = 0; i < schedule.fixtures_ids.length; i += 1) {
+                            fixture = service.newFixture();
                             fixture_id = schedule.fixtures_ids[i];
                             promises.push(DataService.kind(fixture.kind).find(fixture_id));
                         }
@@ -517,13 +518,33 @@ module.exports = (function() {
                     };
                 },
 
+                reload: function (DataService) {
+                    var schedule = this;
+
+                    if (!schedule.id) {
+                        return $q(function (r) { r(schedule); });
+                    }
+
+                    return $q(function (resolve, reject) {
+                        DataService.kind(schedule.kind).find(schedule.id).then(
+                            function (response) {
+                                schedule.load(response.data.data[schedule.kind]);
+                                resolve(schedule);
+                            },
+                            function (response) {
+                                reject(response.data.developer_message);
+                            }
+                        );
+                    });
+                },
+
                 load: function (json) {
                     this.id = json.id || this.id;
                     this.created_at = json.created_at || this.created_at;
                     this.updated_at = json.updated_at || this.updated_at;
                     this.name = json.name || this.name;
-                    this.start_time = json.start_time || this.start_time;
-                    this.end_time = json.end_time || this.end_time;
+                    this.start_time = new Date(json.start_time) || this.start_time;
+                    this.end_time = new Date(json.end_time) || this.end_time;
                     this.owner_id = json.owner_id || this.owner_id;
                     this.fixtures_ids = json.fixtures_ids || this.fixtures_id;
 
@@ -552,19 +573,61 @@ module.exports = (function() {
                 expires: new Date(0),
                 date_exceptions: [],
                 owner_id: '',
+                schedule_id: '',
+
+                save: function (DataService) {
+                    var fixture = this;
+
+                    return $q(function (resolve, reject) {
+                        DataService.kind(fixture.kind).save(fixture.toJSON()).then(
+                            function (response) {
+                                fixture.load(response.data.data[fixture.kind]);
+                                resolve(fixture);
+                            },
+                            function (response) {
+                                console.log(response);
+                                reject(response.data.developer_message);
+                            }
+                        );
+                    });
+                },
 
                 load: function (json) {
                     var properties = [
-                        'id', 'created_at', 'updated_at', 'name',
-                        'start_time', 'end_time', 'description',
-                        'rank', 'label', 'expires', 'date_exceptions',
-                        'owner_id'
-                    ],
-                    fixture = this;
+                            'id', 'created_at', 'updated_at', 'name',
+                            'start_time', 'end_time', 'description',
+                            'rank', 'label', 'expires', 'date_exceptions',
+                            'owner_id', 'schedule_id'
+                        ],
+                        fixture = this;
 
                     angular.forEach(properties, function (property) {
+                        if (property.indexOf('time') > 0 && json[property]) {
+                            json[property] = new Date(json[property]);
+                        }
+
                         fixture[property] = json[property] || fixture[property];
                     });
+                },
+
+                toJSON: function () {
+                    var fixture = this;
+
+                    return {
+                        id: fixture.id,
+                        created_at: fixture.created_at,
+                        updated_at: fixture.updated_at,
+                        name: fixture.name,
+                        start_time: fixture.start_time,
+                        end_time: fixture.end_time,
+                        description: fixture.description,
+                        rank: fixture.rank,
+                        label: fixture.label,
+                        expires: fixture.expires,
+                        date_exceptions: fixture.date_exceptions,
+                        owner_id: fixture.owner_id,
+                        schedule_id: fixture.schedule_id
+                    };
                 }
             };
         };

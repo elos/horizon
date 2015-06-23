@@ -1,0 +1,15 @@
+@import '../shared/colors'; // $red
+@import '../shared/fonts'; // $avenir-stack
+
+@mixin error($font-size: 16px, $width: 60%, $padding: 14px, $margin: 20px auto) {
+  background-color: rgba($red, .1);
+  border: 1px solid $red;
+  border-radius: 7px;
+  color: $red;
+  font-family: $avenir-stack;
+  font-size: $font-size;
+  margin: $margin;
+  padding: $padding;
+  text-align: center;
+  width: $width;
+}

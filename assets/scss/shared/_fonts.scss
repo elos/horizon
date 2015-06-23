@@ -8,6 +8,13 @@
 }
 
 @font-face {
+  font-family: 'AvenirNextMedium';
+  src: url('../../../assets/fonts/avenirnext/AvenirNext-Medium.woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'AvenirNextUltraLight';
   src: url('../../../assets/fonts/avenirnext/AvenirNext-UltraLight.woff');
   font-weight: normal;
@@ -15,4 +22,5 @@
 }
 
 $avenir-stack: AvenirNextRegular, Helvetica, sans-serif;
-$avenir-light-stack: AvenirNextUltraLight, Helvetica, sans-serif;
+$avenir-medium-stack: AvenirNextMedium, $avenir-stack;
+$avenir-light-stack: AvenirNextUltraLight, $avenir-stack;

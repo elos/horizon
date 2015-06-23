@@ -5,21 +5,162 @@
     </div>
     <!-- }}} -->
 
+    <!-- Detail Card {{{ -->
     <div class="detail-card"
          data-ng-show="states.detail.visible"
         >
         <div class="content">
             <h2 class="title"> {{ states.detail.title }} </h2>
+            <img class="x-button"
+                 data-ng-click="handlers.closePanel()"
+                 src="/assets/img/buttons/x-grey.png"
+                 alt="x"
+                 />
+            <!-- Creating Panel {{{ -->
+            <div class="creating-panel"
+                 data-ng-show="states.detail.panel == detailPanels.creating"
+                >
+                <table class="form">
+                    <tr class="row">
+                        <td class="label"> Name: </td>
+                        <td class="input">
+                            <input class="name"
+                                   data-ng-model="models.creating.name"
+                                   type="text"
+                                  />
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="label"> Start Time: </td>
+                        <td class="input">
+                            <input class="start-time"
+                                   data-ng-model="models.creating.startTime"
+                                   type="time"
+                                  />
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="label"> End Time: </td>
+                        <td class="input">
+                            <input class="end-time"
+                                   type="time"
+                                   data-ng-model="models.creating.endTime"
+                                  />
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="label"> Label: </td>
+                        <td class="input">
+                            <input class="label"
+                                   data-ng-model="models.creating.label"
+                                   type="checkbox"
+                                  />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!-- }}} -->
+
+            <!-- Editing Panel {{{ -->
+            <div class="editing-panel"
+                 data-ng-show="states.detail.panel == detailPanels.editing"
+                >
+                <table class="form">
+                    <tr class="row">
+                        <td class="label"> Name: </td>
+                        <td class="input">
+                            <input class="name"
+                                   data-ng-model="models.editing.name"
+                                   type="text"
+                                  />
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="label"> Start Time: </td>
+                        <td class="input">
+                            <input class="start-time"
+                                   data-ng-model="models.editing.startTime"
+                                   type="time"
+                                  />
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="label"> End Time: </td>
+                        <td class="input">
+                            <input class="end-time"
+                                   data-ng-model="models.editing.endTime"
+                                   type="time"
+                                  />
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="label"> Label: </td>
+                        <td class="input">
+                            <input class="label"
+                                   data-ng-model="models.editing.label"
+                                   type="checkbox"
+                                  />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!-- }}} -->
+
+            <!-- Viewing Panel {{{ -->
+            <div class="viewing-panel"
+                 data-ng-show="states.detail.panel == detailPanels.viewing"
+                >
+            </div>
+            <!-- }}} -->
+
+            <!-- Error {{{ -->
+            <div class="error"
+                 data-ng-show="states.detail.error.visible"
+                 >
+                 <p>  {{ states.detail.error.text }} </p>
+            </div>
+            <!-- }}} -->
+
+            <!-- Bottom Buttons {{{ -->
+            <div class="bottom-buttons">
+                <img class="remove-button"
+                     data-ng-click="handlers.removeFixtureEditing()"
+                     data-ng-show="states.detail.panel == detailPanels.editing"
+                     src="/assets/img/buttons/x-circle-red.png"
+                     alt="remove"
+                    />
+                <img class="edit-button"
+                     data-ng-click="handlers.editFixtureViewing()"
+                     data-ng-show="states.detail.panel == detailPanels.viewing"
+                     src="/assets/img/buttons/edit.png"
+                     alt="edit"
+                    />
+                <img class="plus-button"
+                     data-ng-click="handlers.submitNewFixture()"
+                     data-ng-show="states.detail.panel == detailPanels.creating"
+                     src="/assets/img/buttons/plus-circle-green.png"
+                     alt="plus"
+                    />
+                <img class="check-button"
+                     data-ng-click="handlers.saveFixtureEditing()"
+                     data-ng-show="states.detail.panel == detailPanels.editing"
+                     src="/assets/img/buttons/check-circle-green.png"
+                     alt="check"
+                    />
+            </div>
+            <!-- }}} -->
         </div>
     </div>
+    <!-- }}} -->
 
+    <!-- Schedule Card {{{ -->
     <div class="schedule-card"
          data-ng-class="{'detail-visible': states.detail.visible}"
         >
         <div class="header">
             <h2 class="title"> {{ states.schedule.title }} </h2>
         </div>
-        <div class="content">
+        <div class="content" id="schedule-scrollable">
             <div class="schedule">
                 <!-- Time Boxes {{{ -->
                 <div class="time-box"
@@ -35,6 +176,7 @@
                 <div class="labels">
                     <div class="label"
                          data-ng-repeat="label in states.schedule.labels"
+                         data-ng-click="label.click()"
                         >
                         <p class="name">
                             {{ label.name }}
@@ -46,6 +188,7 @@
                 <!-- Elements {{{ -->
                 <div class="element"
                      data-ng-repeat="element in states.schedule.elements"
+                     data-ng-click="element.click()"
                      data-ng-style="element.style">
                     <p class="name"> {{ element.name }} </p>
                 </div>
@@ -53,7 +196,9 @@
             </div>
         </div>
     </div>
+    <!-- }}} -->
 
+    <!-- Full View Buttons {{{ -->
     <div class="back-button"
          data-ng-click="handlers.Back()"
          data-ng-hide="states.detail.visible"
@@ -69,4 +214,5 @@
         <img class="icon" data-ng-src="./assets/img/buttons/plus.png" alt="+" />
         <p class="label"> Add Fixture </p>
     </div>
+    <!-- }}} -->
 </section>

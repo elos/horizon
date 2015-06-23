@@ -49,7 +49,7 @@
                         } ]
                     }
                 })
-                .when('/scheduler/:schedule_id?', {
+                .when('/scheduler/:schedule_id?/:panel?/:panel_target_id?', {
                     templateUrl: './app/components/scheduler/scheduler.html',
                     controller: 'SchedulerController',
                     resolve: {

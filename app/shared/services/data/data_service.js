@@ -10,7 +10,8 @@ module.exports = (function() {
             'credential': 'credentials',
             'calendar': 'calendars',
             'user': 'users',
-            'schedule': 'schedules'
+            'schedule': 'schedules',
+            'fixture': 'fixtures'
         };
 
         service.kind = function (kind) {

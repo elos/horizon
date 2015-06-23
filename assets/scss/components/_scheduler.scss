@@ -1,6 +1,8 @@
 @import '../shared/colors'; // $white-off, $black
 @import '../shared/fonts'; // $avenir-light-stack
 @import '../mixins/card'; // card
+@import '../mixins/error'; // error
+@import '../mixins/inputs'; // text-field
 
 // scss-lint:disable SelectorDepth
 // scss-lint:disable NestingDepth
@@ -30,6 +32,102 @@
     margin-left: 14%;
     margin-right: 2%;
     width: 30%;
+
+    .x-button {
+      cursor: pointer;
+      height: 10px;
+      position: absolute;
+      right: 10px;
+      top: 8px;
+      width: 10px;
+    }
+
+    .content {
+      position: relative;
+
+      @mixin panel {
+        padding: 10px;
+      }
+
+      .creating-panel,
+      .editing-panel {
+        @include panel;
+
+        .form {
+          .row {
+            padding: 4px;
+
+            .label {
+              font-size: 12px;
+              font-family: $avenir-medium-stack;
+              padding: 8px;
+              padding-right: 2px;
+              text-align: right;
+            }
+
+            .input {
+              padding: 6px;
+
+              .name,
+              .start-time,
+              .end-time {
+                @include text-field($font-size: 14px, $padding: 10px, $margin-top: 0);
+              }
+            }
+          }
+        }
+      }
+
+      .viewing-panel {
+        @include panel;
+      }
+
+      .error {
+        @include error($font-size: 14px, $padding: 8px, $margin: 0 auto 10px auto);
+      }
+
+      // --- Bottom Buttons {{{
+      .bottom-buttons {
+        border-top: 2px solid $grey-light;
+        height: 36px;
+        padding: 10px;
+        padding-bottom: 0;
+
+        @mixin bottom-button {
+          cursor: pointer;
+          position: absolute;
+          height: 36px;
+          margin: auto;
+        }
+
+        .plus-button {
+          @include bottom-button;
+          left: calc(50% - 18px);
+
+          width: 36px;
+        }
+
+        .edit-button {
+          @include bottom-button;
+
+          height: 30px;
+          left: calc(50% - 44px);
+          width: 88px;
+        }
+
+        .remove-button,
+        .check-button {
+          @include bottom-button;
+        }
+
+        .check-button {
+          position: absolute;
+          right: 10px; // padding  width
+        }
+      }
+      // --- }}}
+
+    }
   }
 
   // --- schedule card {{{
@@ -44,7 +142,7 @@
     &.detail-visible {
       float: left;
       margin-left: 2%;
-      width: 28%;
+      width: 38%;
     }
 
     .header {
@@ -52,8 +150,8 @@
       border: 1px solid $grey;
       height: 34px;
       line-height: 34px;
-      margin-top: -1px;
       margin-left: -1px;
+      margin-top: -1px;
       text-align: center;
       width: 100%;
 
@@ -92,6 +190,7 @@
           width: 100%;
 
           .label {
+            cursor: pointer;
             background-color: $turquoise;
             border: 1px solid $grey;
             border-radius: 4px;
@@ -111,6 +210,7 @@
         .element {
           background-color: $white-grey;
           border: 1px solid $grey;
+          cursor: pointer;
           margin-left: -1px;
           position: absolute;
           width: calc(100% - 2px);
