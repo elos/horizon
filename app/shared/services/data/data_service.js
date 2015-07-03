@@ -1,17 +1,17 @@
 module.exports = (function() {
     'use strict';
 
-    var DataService = function($http, AccessService, HostService) {
+    var DataService = function($http, $log, AccessService, HostService) {
         var service = this;
 
         service.spaces = {
-            'person': 'persons',
-            'session': 'sessions',
-            'credential': 'credentials',
             'calendar': 'calendars',
-            'user': 'users',
+            'credential': 'credentials',
+            'fixture': 'fixtures',
+            'person': 'persons',
             'schedule': 'schedules',
-            'fixture': 'fixtures'
+            'session': 'sessions',
+            'user': 'users'
         };
 
         service.Types = {
@@ -19,7 +19,9 @@ module.exports = (function() {
             Date: 'date',
             String: 'string',
             Array: 'array',
-            Map: 'map'
+            Map: 'map',
+            Integer: 'integer',
+            Boolean: 'boolean'
         };
 
         service.IdentityTransformation = function (raw) { return raw; };
@@ -34,11 +36,16 @@ module.exports = (function() {
         service.Transforms.Unmarshal[service.Types.String] = service.IdentityTransformation;
         service.Transforms.Unmarshal[service.Types.Array] = service.IdentityTransformation;
         service.Transforms.Unmarshal[service.Types.Map] = service.IdentityTransformation;
+        service.Transforms.Unmarshal[service.Types.Integer] = service.IdentityTransformation;
+        service.Transforms.Unmarshal[service.Types.Boolean] = service.IdentityTransformation;
+
         service.Transforms.Marshal[service.Types.ID] = service.IdentityTransformation;
         service.Transforms.Marshal[service.Types.Date] = service.IdentityTransformation;
         service.Transforms.Marshal[service.Types.String] = service.IdentityTransformation;
         service.Transforms.Marshal[service.Types.Array] = service.IdentityTransformation;
         service.Transforms.Marshal[service.Types.Map] = service.IdentityTransformation;
+        service.Transforms.Marshal[service.Types.Integer] = service.IdentityTransformation;
+        service.Transforms.Marshal[service.Types.Boolean] = service.IdentityTransformation;
 
         service.unmarshal = function (model, typemap, data) {
             /*globals angular*/
@@ -61,14 +68,10 @@ module.exports = (function() {
             return JSON.stringify(json);
         };
 
-        service.one = function (OtherClass, id) {
-            return Class.find(id);
-        };
-
         service.kind = function (kind) {
-
             return {
                 find: function (id) {
+                    $log.info('Finding ' + kind + ' with id ' + id);
                     var params = {};
                     params[kind + "_id"] = id;
 
@@ -83,20 +86,21 @@ module.exports = (function() {
                 },
 
                 save: function (model) {
+                    $log.info('Saving ' + model + ' as ' + kind);
                     return $http({
                         method: 'POST',
                         url: HostService.url('/' + service.spaces[kind]),
                         headers: {
                             'Elos-Auth': AccessService.token()
                         },
-                        data: JSON.stringify(model)
+                        data: model
                     });
                 }
             };
         };
     };
 
-    DataService.$inject = [ '$http', 'AccessService', 'HostService' ];
+    DataService.$inject = [ '$http', '$log', 'AccessService', 'HostService' ];
 
     return DataService;
 }());

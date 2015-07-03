@@ -112,8 +112,9 @@ module.exports = (function () {
                     isLabel = false;
                 }
 
-                var fixture = ModelsService.newFixture();
+                var fixture = ModelsService.Fixture.new();
                 fixture.name = name;
+                fixture.owner_id = $scope.states.schedule.target.owner_id;
                 fixture.start_time = startTime;
                 fixture.end_time = endTime;
                 fixture.label = isLabel;
@@ -211,7 +212,7 @@ module.exports = (function () {
             var i,
                 fixture;
 
-            schedule.fixtures(DataService).then(
+            schedule.fixtures().then(
                 function (fixtures) {
                     $scope.states.schedule.title = schedule.name;
                     $scope.states.schedule.labels = [];
@@ -388,7 +389,7 @@ module.exports = (function () {
                                     $location.path('/scheduler/' + $routeParams.schedule_id);
                                 }
 
-                                fixture = ModelsService.newFixture();
+                                fixture = ModelsService.Fixture.new();
                                 DataService.kind(fixture.kind).find($routeParams.panel_target_id).then(
                                     function (fixture) {
                                         load(schedule);
@@ -403,7 +404,7 @@ module.exports = (function () {
                                     $location.path('/scheduler/' + $routeParams.schedule_id);
                                 }
 
-                                fixture = ModelsService.newFixture();
+                                fixture = ModelsService.Fixture.new();
                                 DataService.kind(fixture.kind).find($routeParams.panel_target_id).then(
                                     function (fixture) {
                                         load(schedule);

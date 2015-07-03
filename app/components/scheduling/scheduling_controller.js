@@ -4,7 +4,7 @@ module.exports = (function () {
         MonthSelector = 'monthly',
         YearlySelector = 'yearly';
 
-    SchedulingController = function ($scope, $location, $route, $routeParams, DataService, TimeService, ModelsService) {
+    SchedulingController = function ($scope, $location, $route, $routeParams, TimeService, ModelsService) {
         var controller = this,
             i,
             monthName;
@@ -26,19 +26,19 @@ module.exports = (function () {
             selectBase: function () {
                 ModelsService.session().then(
                     function (session) {
-                        return session.owner(DataService);
+                        return session.owner();
                     }
                 ).then(
                     function (user) {
-                        return user.person(DataService);
+                        return user.person();
                     }
                 ).then(
                     function (person) {
-                        return person.calendar(DataService);
+                        return person.calendar();
                     }
                 ).then(
                     function (calendar) {
-                        return calendar.base_schedule(DataService);
+                        return calendar.base_schedule();
                     }
                 ).then(
                     function (schedule) {
@@ -62,19 +62,19 @@ module.exports = (function () {
             selectWeekday: function (weekday) {
                 ModelsService.session().then(
                     function (session) {
-                        return session.owner(DataService);
+                        return session.owner();
                     }
                 ).then(
                     function (user) {
-                        return user.person(DataService);
+                        return user.person();
                     }
                 ).then(
                     function (person) {
-                        return person.calendar(DataService);
+                        return person.calendar();
                     }
                 ).then(
                     function (calendar) {
-                        return calendar.weekday_schedule(DataService, weekday);
+                        return calendar.weekday_schedule(weekday);
                     }
                 ).then(
                     function (schedule) {
@@ -98,19 +98,19 @@ module.exports = (function () {
             selectYearday: function (yearday) {
                 ModelsService.session().then(
                     function (session) {
-                        return session.owner(DataService);
+                        return session.owner();
                     }
                 ).then(
                     function (user) {
-                        return user.person(DataService);
+                        return user.person();
                     }
                 ).then(
                     function (person) {
-                        return person.calendar(DataService);
+                        return person.calendar();
                     }
                 ).then(
                     function (calendar) {
-                        return calendar.yearday_schedule(DataService, yearday);
+                        return calendar.yearday_schedule(yearday);
                     }
                 ).then(
                     function (schedule) {
@@ -277,7 +277,7 @@ module.exports = (function () {
         // --- }}}
     };
 
-    SchedulingController.$inject = [ '$scope', '$location', '$route', '$routeParams', 'DataService',
+    SchedulingController.$inject = [ '$scope', '$location', '$route', '$routeParams',
                                      'TimeService', 'ModelsService' ];
 
     return SchedulingController;

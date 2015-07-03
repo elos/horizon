@@ -8,17 +8,19 @@ module.exports = (function() {
 
         service.kinds = [ 'person', 'session', 'credential', 'calendar' ];
 
-        service.UserKind = 'user';
-        service.PersonKind = 'person';
         service.CalendarKind = 'calendar';
+        service.FixtureKind = 'fixture';
+        service.PersonKind = 'person';
+        service.ScheduleKind = 'schedule';
+        service.UserKind = 'user';
 
         // --- User {{{
         service.User = {
             TypeMap: {
-                id: DataService.Type.ID,
-                created_at: DataService.Type.Date,
-                updated_at: DataService.Type.Date,
-                password: DataService.Type.String,
+                id: DataService.Types.ID,
+                created_at: DataService.Types.Date,
+                updated_at: DataService.Types.Date,
+                password: DataService.Types.String,
             },
 
             new: function () {
@@ -48,19 +50,36 @@ module.exports = (function() {
                                 }
                             }).then(
                                 function (response) {
-                                    user.relations.person = service.Person().new().load(response.data.data[service.PersonKind]);
+                                    user.relations.person = service.Person.new().load(response.data.data[service.PersonKind]);
                                     resolve(user.relations.person);
                                 },
                                 function (response) {
-                                    reject(response.data.developer_message);
+                                    switch (response.data.status) {
+                                        case 404:
+                                            var person = service.Person.new();
+                                            person.owner_id = user.id;
+
+                                            person.save().then(
+                                                function (response) {
+                                                    user.relations.person = service.Person.new().load(response.data.data[service.PersonKind]);
+                                                    resolve(user.relations.person);
+                                                },
+                                                function () {
+                                                    throw 'fuck';
+                                                }
+                                            );
+                                            break;
+                                        default:
+                                            reject(response.data.developer_message);
+                                    }
                                 }
                             );
                         });
                     },
 
-                    load: function(DataService, payload) {
+                    load: function(payload) {
                         var user = this;
-                        DataService.unmarshal(user, user.TypeMap, payload);
+                        DataService.unmarshal(user, service.User.TypeMap, payload);
                         this.relations = {};
                         return user;
                     }
@@ -72,325 +91,368 @@ module.exports = (function() {
         // --- }}}
 
         // --- New Person {{{
-        service.newPerson = function () {
-            return {
-                kind: 'person',
-
-                id: '',
-                created_at: new Date(),
-                updated_at: new Date(),
-                name: '',
-                owner_id: '',
-                calendar_id: '',
-
-                relations: {
-                    owner: undefined,
-                    calendar: undefined
-                },
-
-                calendar: function (DataService) {
-                    var person = this;
-
-                    return $q(function(resolve, reject) {
-                        if (person.relations.calendar) {
-                            resolve(person.relations.calendar);
-                            return;
-                        }
-
-                        var calendar = service.newCalendar();
-
-                        if (!person.calendar_id) {
-                            calendar.save(DataService).then(
-                                function (calendar) {
-                                    person.relations.calendar = calendar;
-                                    resolve(calendar);
-                                },
-                                function (error) {
-                                    reject(error);
-                                }
-                            );
-                        } else {
-                            DataService.kind(calendar.kind).find(person.calendar_id).then(
-                                    function (response) {
-                                        calendar.load(response.data.data[calendar.kind]);
-
-                                        person.relations.calendar = calendar;
-                                        calendar.relations.person = person;
-
-                                        resolve(calendar);
-                                    },
-                                    function (response) {
-                                        reject(response.data.developer_message);
-                                    }
-                            );
-                        }
-                    });
-                },
-
-                save: function (DataService) {
-                    return DataService.kind(this.kind).save(this.toJSON());
-                },
-
-                load: function (json) {
-                    this.id          = json.id || this.id;
-                    this.created_at  = json.created_at || this.created_at;
-                    this.updated_at  = json.deleted_at || this.updated_at;
-                    this.name        = json.name || this.name;
-                    this.owner_id    = json.owner_id || this.owner_id;
-                    this.calendar_id = json.calendar_id || this.calendar_id;
-
-                    this.relations.owner = undefined;
-                },
-
-                toJSON: function () {
-                    var person = this;
-
-                    return {
-                        id: person.id,
-                        created_at: person.created_at,
-                        updated_at: person.updated_at,
-                        name: person.name,
-                        owner_id: person.owner_id,
-                        calendar_id: person.calendar_id
-                    };
-                }
-            };
-        };
-        // --- }}}
-
-        //  --- New Calendar {{{
-        service.Calendar = {
+        service.Person = {
             TypeMap: {
-                id: DataService.Type.ID,
-                created_at: DataService.Type.Date,
-                updated_at: DataService.Type.Date,
-                password: DataService.Type.String,
-                person_id: DataService.Type.String,
-                owner_id: DataService.Type.String,
-                base_schedule_id: DataService.Type.String,
-                weekday_schedules: DataService.Type.Map,
-                yearday_schedules: DataService.Type.Map,
+                id: DataService.Types.ID,
+                created_at: DataService.Types.Date,
+                updated_at: DataService.Types.Date,
+                name: DataService.Types.String,
+                owner_id: DataService.Types.String,
+                calendar_id: DataService.Types.String
             },
 
-            new: {
-                kind: service.CalendarKind,
+            new: function () {
+                return {
+                    kind: service.PersonKind,
 
-                id: '',
-                created_at: new Date(),
-                updated_at: new Date(),
-                person_id: '',
-                owner_id: '',
-                base_schedule_id: '',
-                weekday_schedules: {},
-                yearday_schedules: {},
+                    id: undefined,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    name: undefined,
+                    owner_id: undefined,
+                    calendar_id: undefined,
 
-                relations: {
-                    owner: undefined,
-                    person: undefined,
-                    base_schedule: undefined,
-                    weekday_schedules: {},
-                    yearday_schedules: {}
-                },
+                    relations: {
+                        owner: undefined,
+                        calendar: undefined
+                    },
 
-                owner: function () {
-                    var calendar = this;
+                    owner: function () {
+                        var person = this;
 
-                    return $q(function (resolve, reject) {
-                        if (calendar.relations.owner) { return resolve(calendar.relations.owner); }
-
-                        DataService.kind(service.UserKind).find(calendar.owner_id).then(
-                            function (response) {
-                                calendar.relations.owner = service.User.new().load(response.data.data[service.UserKind]);
-                                resolve(calendar.relations.owner);
-                            },
-                            function (response) {
-                                reject(response.data.developer_message);
-                            }
-                        );
-                    });
-                },
-
-                person: function () {
-                    var calendar = this;
-
-                    return $q(function (resolve, reject) {
-                        if (calendar.relations.person) { return resolve(calendar.relations.person); }
-
-                        DataService.kind(service.PersonKind).find(calendar.person_id).then(
-                            function (response) {
-                                calendar.relations.person = service.Person.new().load(response.data.data[service.PersonKind]);
-                                resolve(calendar.relations.owner);
-                            },
-                            function (response) {
-                                reject(response.data.developer_message);
-                            }
-                        );
-                    });
-                },
-
-                base_schedule: function () {
-                    var calendar = this;
-
-                    return $q(function (resolve, reject) {
-                        if (calendar.relations.base_schedule) { return resolve(calendar.relations.base_schedule); }
-
-                        switch (typeof calendar.base_schedule_id) {
-                            case "string":
-                                DataService.kind(service.ScheduleKind).find(calendar.base_schedule_id).then(
-                                    function (response) {
-                                        calendar.relations.base_schedule = service.Schedule.new().load(response.data.data[service.ScheduleKind]);
-                                        resolve(calendar.relations.base_schedule);
-                                    },
-                                    function (response) {
-                                        reject(response.data.developer_message);
-                                    }
-                                );
-                                break;
-                            case "undefined":
-                                var schedule = service.Schedule.new();
-
-                                schedule.name = "Base Schedule";
-                                schedule.owner_id = calendar.owner_id;
-
-                                schedule.save(DataService).then(
-                                    function (schedule) {
-                                        calendar.relations.base_schedule = schedule;
-
-                                        resolve(schedule);
-                                    },
-                                    function (error) {
-                                        reject(error);
-                                    }
-                                );
-                                break;
-                        }
-                    });
-                },
-
-                weekday_schedule: function (weekday) {
-                    var calendar = this;
-
-                    return $q(function (resolve, reject) {
-                        if (calendar.relations.weekday_schedules[weekday]) { return resolve(calendar.relations.weekday_schedules[weekday]); }
-
-                        switch(typeof calendar.weekday_schedules[weekday]) {
-                            case "string":
-                                DataService.kind(service.ScheduleKind).find(calendar.weekday_schedules[weekday]).then(
-                                    function (response) {
-                                        calendar.relations.weekday_schedules[weekday] = service.Schedule.new().load(response.data.data[service.ScheduleKind]);
-                                        resolve(calendar.relations.weekday_schedules);
-                                    },
-                                    function (response) {
-                                        reject(response.data.developer_message);
-                                    }
-                                );
-                                break;
-                            case "undefined":
-                                var schedule = service.Schedule.new();
-
-                                schedule.name = "Weekday Schedule for " + TimeService.Weekdays[weekday];
-                                schedule.owner_id = calendar.owner_id;
-
-                                schedule.save(DataService).then(
-                                    function (schedule) {
-                                        calendar.reload().then(
-                                            function () { resolve(schedule); },
-                                            function (error) { reject(error); }
-                                        );
-                                    },
-                                    function (error) {
-                                        reject(error);
-                                    }
-                                );
-                                break;
-                        }
-                    });
-                },
-
-                yearday_schedule: function (yearday) {
-                    var calendar = this;
-
-                    return $q(function (resolve, reject) {
-                        if (calendar.relations.yearday_schedules[yearday]) { return resolve(calendar.relations.yearday_schedules[yearday]); }
-
-                        switch(typeof calendar.yearday_schedules[yearday]) {
-                            case "string":
-                                service.FindSchedule(calendar.yearday_schedules[yearday], DataService).then(
-                                    function (schedule) {
-                                        resolve(schedule);
-                                    },
-                                    function (error) {
-                                        reject(error);
-                                    }
-                                );
-
-                                break;
-                            case "undefined":
-                                var schedule = service.Schedule.new();
-
-                                schedule.name = "Yearday Schedule for " + TimeService.YeardayString(yearday);
-
-                                schedule.save().then(
-                                    function (schedule) {
-                                        calendar.reload(DataService).then(
-                                            function () { resolve(schedule); },
-                                            function (error) { reject(error); }
-                                        );
-                                    },
-                                    function (error) {
-                                        reject(error);
-                                    }
-                                );
-                                break;
-                        }
-                    });
-                },
-
-                save: function () {
-                    var calendar = this;
-
-                    return $q(function (resolve, reject) {
-                        DataService.kind(calendar.kind).save(calendar.toJSON()).then(
-                            function (response) {
-                                calendar.load(response.data.data[calendar.kind]);
-                                resolve(calendar);
-                            },
-                            function (response) {
-                                reject(response.data.developer_message);
-                            }
-                        );
-                    });
-                },
-
-                load: function (payload) {
-                    var calendar = this;
-                    DataService.unmarshal(calendar, calendar.TypeMap, payload);
-                    return calendar;
-                },
-
-                reload: function () {
-                    var calendar = this;
-
-                    switch (typeof calendar.id) {
-                        case "string":
                         return $q(function (resolve, reject) {
-                            DataService.kind(calendar.kind).find(calendar.id).then(
+                            if (person.relations.owner) { return resolve(person.relations.owner); }
+
+                            switch (typeof person.owner_id) {
+                                case "string":
+                                    DataService.kind(service.UserKind).find(person.owner_id).then(
+                                        function (response) {
+                                            person.relations.owner = service.User.new().load(response.data.data[service.UserKind]);
+                                            resolve(person.relations.owner);
+                                        },
+                                        function (response) {
+                                            reject(response.data.developer_message);
+                                        }
+                                    );
+                                    break;
+                                case "undefined":
+                                    throw "User can't be undefined lol";
+                            }
+                        });
+                    },
+
+                    calendar: function () {
+                        var person = this;
+
+                        return $q(function (resolve, reject) {
+                            if (person.relations.calendar) { return resolve(person.relations.calendar); }
+
+                            switch (typeof person.calendar_id) {
+                                case "string":
+                                    DataService.kind(service.CalendarKind).find(person.calendar_id).then(
+                                        function (response) {
+                                            person.relations.calendar = service.Calendar.new().load(response.data.data[service.CalendarKind]);
+                                            resolve(person.relations.calendar);
+                                        },
+                                        function (response) {
+                                            reject(response.data.developer_message);
+                                        }
+                                    );
+                                    break;
+                                case "undefined":
+                                    var calendar = service.Calendar.new();
+
+                                    calendar.owner_id = person.owner_id;
+                                    calendar.person_id = person.id;
+
+                                    calendar.save().then(
+                                        function (calendar) {
+                                            person.calendar_id = calendar.id;
+                                            person.save().then(
+                                                function (person) {
+                                                    person.relations.calendar = calendar;
+                                                    resolve(calendar);
+                                                },
+                                                function (error) {
+                                                    reject(error);
+                                                }
+                                            );
+                                        },
+                                        function (error) {
+                                            reject(error);
+                                        }
+                                    );
+                                    break;
+                            }
+                        });
+                    },
+
+                    load: function(payload) {
+                        var person = this;
+                        DataService.unmarshal(person, service.Person.TypeMap, payload);
+                        this.relations = {};
+                        return person;
+                    },
+
+                    save: function () {
+                        var person = this;
+                        return $q(function (resolve, reject) {
+                            DataService.kind(person.kind).save(person.toJSON()).then(
                                 function (response) {
-                                    resolve(calendar.load(response.data.data[calendar.kind]));
+                                    resolve(person.load(response.data.data[service.PersonKind]));
                                 },
                                 function (response) {
                                     reject(response.data.developer_message);
                                 }
                             );
                         });
-                        case "undefined":
-                            return $q(function (r) { r(calendar); });
-                    }
-                },
+                    },
 
-                toJSON: function () {
-                    return DataService.marshal(this, this.TypeMap);
-                }
+                    toJSON: function () {
+                        return DataService.marshal(this, service.Person.TypeMap);
+                    }
+                };
+            }
+        };
+        // --- }}}
+
+        //  --- New Calendar {{{
+        service.Calendar = {
+            TypeMap: {
+                id: DataService.Types.ID,
+                created_at: DataService.Types.Date,
+                updated_at: DataService.Types.Date,
+                password: DataService.Types.String,
+                person_id: DataService.Types.String,
+                owner_id: DataService.Types.String,
+                base_schedule_id: DataService.Types.String,
+                weekday_schedules: DataService.Types.Map,
+                yearday_schedules: DataService.Types.Map,
+            },
+
+            new: function () {
+                return {
+                    kind: service.CalendarKind,
+
+                    id: undefined,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    person_id: undefined,
+                    owner_id: undefined,
+                    base_schedule_id: undefined,
+                    weekday_schedules: {},
+                    yearday_schedules: {},
+
+                    relations: {
+                        owner: undefined,
+                        person: undefined,
+                        base_schedule: undefined,
+                        weekday_schedules: {},
+                        yearday_schedules: {}
+                    },
+
+                    owner: function () {
+                        var calendar = this;
+
+                        return $q(function (resolve, reject) {
+                            if (calendar.relations.owner) { return resolve(calendar.relations.owner); }
+
+                            DataService.kind(service.UserKind).find(calendar.owner_id).then(
+                                function (response) {
+                                    calendar.relations.owner = service.User.new().load(response.data.data[service.UserKind]);
+                                    resolve(calendar.relations.owner);
+                                },
+                                function (response) {
+                                    reject(response.data.developer_message);
+                                }
+                            );
+                        });
+                    },
+
+                    person: function () {
+                        var calendar = this;
+
+                        return $q(function (resolve, reject) {
+                            if (calendar.relations.person) { return resolve(calendar.relations.person); }
+
+                            DataService.kind(service.PersonKind).find(calendar.person_id).then(
+                                function (response) {
+                                    calendar.relations.person = service.Person.new().load(response.data.data[service.PersonKind]);
+                                    resolve(calendar.relations.owner);
+                                },
+                                function (response) {
+                                    reject(response.data.developer_message);
+                                }
+                            );
+                        });
+                    },
+
+                    base_schedule: function () {
+                        var calendar = this;
+
+                        return $q(function (resolve, reject) {
+                            if (calendar.relations.base_schedule) { return resolve(calendar.relations.base_schedule); }
+
+                            switch (typeof calendar.base_schedule_id) {
+                                case "string":
+                                    DataService.kind(service.ScheduleKind).find(calendar.base_schedule_id).then(
+                                        function (response) {
+                                            calendar.relations.base_schedule = service.Schedule.new().load(response.data.data[service.ScheduleKind]);
+                                            resolve(calendar.relations.base_schedule);
+                                        },
+                                        function (response) {
+                                            reject(response.data.developer_message);
+                                        }
+                                    );
+                                    break;
+                                case "undefined":
+                                    var schedule = service.Schedule.new();
+
+                                    schedule.name = "Base Schedule";
+                                    schedule.owner_id = calendar.owner_id;
+
+                                    schedule.save(DataService).then(
+                                        function (schedule) {
+                                            calendar.relations.base_schedule = schedule;
+
+                                            resolve(schedule);
+                                        },
+                                        function (error) {
+                                            reject(error);
+                                        }
+                                    );
+                                    break;
+                            }
+                        });
+                    },
+
+                    weekday_schedule: function (weekday) {
+                        var calendar = this;
+                        console.log('Weekday schedule', weekday);
+
+                        return $q(function (resolve, reject) {
+                            if (calendar.relations.weekday_schedules[weekday]) { return resolve(calendar.relations.weekday_schedules[weekday]); }
+
+                            switch (typeof calendar.weekday_schedules[weekday]) {
+                                case "string":
+                                    DataService.kind(service.ScheduleKind).find(calendar.weekday_schedules[weekday]).then(
+                                        function (response) {
+                                            calendar.relations.weekday_schedules[weekday] = service.Schedule.new().load(response.data.data[service.ScheduleKind]);
+                                            resolve(calendar.relations.weekday_schedules);
+                                        },
+                                        function (response) {
+                                            reject(response.data.developer_message);
+                                        }
+                                    );
+                                    break;
+                                case "undefined":
+                                    var schedule = service.Schedule.new();
+
+                                    schedule.name = "Weekday Schedule for " + TimeService.Weekdays[weekday];
+                                    schedule.owner_id = calendar.owner_id;
+
+                                    schedule.save(DataService).then(
+                                        function (schedule) {
+                                            calendar.reload().then(
+                                                function () { resolve(schedule); },
+                                                function (error) { reject(error); }
+                                            );
+                                        },
+                                        function (error) {
+                                            reject(error);
+                                        }
+                                    );
+                                    break;
+                            }
+                        });
+                    },
+
+                    yearday_schedule: function (yearday) {
+                        var calendar = this;
+
+                        return $q(function (resolve, reject) {
+                            if (calendar.relations.yearday_schedules[yearday]) { return resolve(calendar.relations.yearday_schedules[yearday]); }
+
+                            switch (typeof calendar.yearday_schedules[yearday]) {
+                                case "string":
+                                    service.FindSchedule(calendar.yearday_schedules[yearday], DataService).then(
+                                        function (schedule) {
+                                            resolve(schedule);
+                                        },
+                                        function (error) {
+                                            reject(error);
+                                        }
+                                    );
+
+                                    break;
+                                case "undefined":
+                                    var schedule = service.Schedule.new();
+
+                                    schedule.name = "Yearday Schedule for " + TimeService.YeardayString(yearday);
+                                    schedule.owner_id = calendar.owner_id;
+
+                                    schedule.save().then(
+                                        function (schedule) {
+                                            calendar.reload(DataService).then(
+                                                function () { resolve(schedule); },
+                                                function (error) { reject(error); }
+                                            );
+                                        },
+                                        function (error) {
+                                            reject(error);
+                                        }
+                                    );
+                                    break;
+                            }
+                        });
+                    },
+
+                    save: function () {
+                        var calendar = this;
+
+                        return $q(function (resolve, reject) {
+                            DataService.kind(calendar.kind).save(calendar.toJSON()).then(
+                                function (response) {
+                                    calendar.load(response.data.data[calendar.kind]);
+                                    resolve(calendar);
+                                },
+                                function (response) {
+                                    reject(response.data.developer_message);
+                                }
+                            );
+                        });
+                    },
+
+                    load: function (payload) {
+                        var calendar = this;
+                        DataService.unmarshal(calendar, service.Calendar.TypeMap, payload);
+                        return calendar;
+                    },
+
+                    reload: function () {
+                        var calendar = this;
+
+                        switch (typeof calendar.id) {
+                            case "string":
+                                return $q(function (resolve, reject) {
+                                    DataService.kind(calendar.kind).find(calendar.id).then(
+                                        function (response) {
+                                            resolve(calendar.load(response.data.data[calendar.kind]));
+                                        },
+                                        function (response) {
+                                            reject(response.data.developer_message);
+                                        }
+                                    );
+                                });
+                            case "undefined":
+                                return $q(function (r) { r(calendar); });
+                        }
+                    },
+
+                    toJSON: function () {
+                        return DataService.marshal(this, service.Calendar.TypeMap);
+                    }
+                };
             }
         };
         //  --- }}}
@@ -407,7 +469,6 @@ module.exports = (function() {
                 owner_id: DataService.Types.String,
                 fixtures_ids: DataService.Types.Array
             },
-
 
             new: function () {
                 return {
@@ -433,7 +494,7 @@ module.exports = (function() {
                         return $q(function (resolve, reject) {
                             if (schedule.relations.fixtures) { return resolve(schedule.relations.fixtures); }
 
-                            $q.all(schedule.fixture_ids.map(function (fixture_id) {
+                            $q.all(schedule.fixtures_ids.map(function (fixture_id) {
                                 return DataService.kind(service.FixtureKind).find(fixture_id);
                             })).then(
                                 function (responses) {
@@ -464,17 +525,19 @@ module.exports = (function() {
                     },
 
                     toJSON: function () {
-                        return DataService.marshal(this, this.TypeMap);
+                        return DataService.marshal(this, service.Schedule.TypeMap);
                     },
 
                     load: function (payload) {
-                        return DataService.unmarshal(this, this.TypeMap, payload);
+                        DataService.unmarshal(this, service.Schedule.TypeMap, payload);
+                        this.relations = {};
+                        return this;
                     },
 
                     reload: function () {
                         var schedule = this;
                         return $q(function (resolve, reject) {
-                            switch(typeof schedule.id) {
+                            switch (typeof schedule.id) {
                                 case "string":
                                     DataService.kind(schedule.kind).find(schedule.id).then(
                                         function (response) {
@@ -497,80 +560,69 @@ module.exports = (function() {
         // --- }}}
 
         // --- New Fixture {{{
-        service.newFixture = function () {
-            return {
-                kind: 'fixture',
+        service.Fixture = {
+            TypeMap: {
+                id: DataService.Types.String,
+                created_at: DataService.Types.Date,
+                updated_at: DataService.Types.Date,
+                name: DataService.Types.String,
+                start_time: DataService.Types.Date,
+                end_time: DataService.Types.Date,
+                description: DataService.Types.String,
+                rank: DataService.Types.Integer,
+                label: DataService.Types.Boolean,
+                expires: DataService.Types.Date,
+                date_exceptions: DataService.Types.Array,
+                owner_id: DataService.Types.String,
+                schedule_id: DataService.Types.String
+            },
 
-                id: '',
-                created_at: new Date(),
-                updated_at: new Date(),
-                name: '',
-                start_time: new Date(0),
-                end_time: new Date(0),
-                description: '',
-                rank: 0,
-                label: false,
-                expires: new Date(0),
-                date_exceptions: [],
-                owner_id: '',
-                schedule_id: '',
+            new: function () {
+                return {
+                    kind: service.FixtureKind,
 
-                save: function (DataService) {
-                    var fixture = this;
+                    id: undefined,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    name: '',
+                    start_time: new Date(0),
+                    end_time: new Date(0),
+                    description: '',
+                    rank: 0,
+                    label: false,
+                    expires: new Date(0),
+                    date_exceptions: [],
+                    owner_id: undefined,
+                    schedule_id: undefined,
 
-                    return $q(function (resolve, reject) {
-                        DataService.kind(fixture.kind).save(fixture.toJSON()).then(
-                            function (response) {
-                                fixture.load(response.data.data[fixture.kind]);
-                                resolve(fixture);
-                            },
-                            function (response) {
-                                console.log(response);
-                                reject(response.data.developer_message);
-                            }
-                        );
-                    });
-                },
+                    save: function () {
+                        var fixture = this;
 
-                load: function (json) {
-                    var properties = [
-                            'id', 'created_at', 'updated_at', 'name',
-                            'start_time', 'end_time', 'description',
-                            'rank', 'label', 'expires', 'date_exceptions',
-                            'owner_id', 'schedule_id'
-                        ],
-                        fixture = this;
+                        return $q(function (resolve, reject) {
+                            DataService.kind(fixture.kind).save(fixture.toJSON()).then(
+                                function (response) {
+                                    fixture.load(response.data.data[fixture.kind]);
+                                    resolve(fixture);
+                                },
+                                function (response) {
+                                    console.log(response);
+                                    reject(response.data.data.developer_message);
+                                }
+                            );
+                        });
+                    },
 
-                    /*globals angular*/
-                    angular.forEach(properties, function (property) {
-                        if (property.indexOf('time') > 0 && json[property]) {
-                            json[property] = new Date(json[property]);
-                        }
+                    load: function (payload) {
+                        DataService.unmarshal(this, service.Fixture.TypeMap, payload);
+                        this.relations = {};
+                        return this;
+                    },
 
-                        fixture[property] = json[property] || fixture[property];
-                    });
-                },
-
-                toJSON: function () {
-                    var fixture = this;
-
-                    return {
-                        id: fixture.id,
-                        created_at: fixture.created_at,
-                        updated_at: fixture.updated_at,
-                        name: fixture.name,
-                        start_time: fixture.start_time,
-                        end_time: fixture.end_time,
-                        description: fixture.description,
-                        rank: fixture.rank,
-                        label: fixture.label,
-                        expires: fixture.expires,
-                        date_exceptions: fixture.date_exceptions,
-                        owner_id: fixture.owner_id,
-                        schedule_id: fixture.schedule_id
-                    };
-                }
-            };
+                    toJSON: function () {
+                        return DataService.marshal(this, service.Fixture.TypeMap);
+                    }
+                };
+            }
         };
         // --- }}}
 
@@ -590,7 +642,7 @@ module.exports = (function() {
                     owner: undefined
                 },
 
-                owner: function (DataService) {
+                owner: function () {
                     var session = this;
 
                     return $q(function(resolve, reject) {
@@ -630,7 +682,7 @@ module.exports = (function() {
         // --- }}}
 
         service.FindSchedule = function (id, DataService) {
-            var schedule = service.newSchedule();
+            var schedule = service.Schedule.new();
 
             return $q(function (resolve, reject) {
                 DataService.kind(schedule.kind).find(id).then(
@@ -661,7 +713,7 @@ module.exports = (function() {
         };
     };
 
-    ModelsService.$inject = [ '$http', '$q', 'AccessService', 'HostService', 'TimeService' ];
+    ModelsService.$inject = [ '$http', '$q', 'AccessService', 'DataService', 'HostService', 'TimeService' ];
 
     return ModelsService;
 }());
