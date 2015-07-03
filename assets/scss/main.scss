@@ -1,5 +1,6 @@
 // Import all third party SCSS
 @import '../../bower_components/compass-mixins/lib/compass/utilities';
+@import '../../bower_components/metrics-graphics/dist/metricsgraphics.css';
 
 // Our global CSS reset
 @include global-reset;

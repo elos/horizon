@@ -104,6 +104,7 @@
 
   // --- Configure Directives {{{
   app.directive('calendarDay', require('./shared/directives/calendar_day/calendar_day_directive'));
+  app.directive('graph', require('./shared/directives/graph/graph_directive'));
   // --- }}}
 
   // --- Configure Services {{{
