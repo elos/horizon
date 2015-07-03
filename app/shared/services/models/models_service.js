@@ -314,6 +314,12 @@ module.exports = (function() {
                                     schedule.save(DataService).then(
                                         function (schedule) {
                                             calendar.relations.base_schedule = schedule;
+                                            calendar.base_schedule_id = schedule.id;
+
+                                            calendar.save().then(
+                                                function () { resolve(schedule); },
+                                                function () { throw 'shit'; }
+                                            );
 
                                             resolve(schedule);
                                         },
@@ -338,7 +344,7 @@ module.exports = (function() {
                                     DataService.kind(service.ScheduleKind).find(calendar.weekday_schedules[weekday]).then(
                                         function (response) {
                                             calendar.relations.weekday_schedules[weekday] = service.Schedule.new().load(response.data.data[service.ScheduleKind]);
-                                            resolve(calendar.relations.weekday_schedules);
+                                            resolve(calendar.relations.weekday_schedules[weekday]);
                                         },
                                         function (response) {
                                             reject(response.data.developer_message);
@@ -351,11 +357,14 @@ module.exports = (function() {
                                     schedule.name = "Weekday Schedule for " + TimeService.Weekdays[weekday];
                                     schedule.owner_id = calendar.owner_id;
 
-                                    schedule.save(DataService).then(
+                                    schedule.save().then(
                                         function (schedule) {
-                                            calendar.reload().then(
+                                            calendar.relations.weekday_schedules[weekday] = schedule;
+                                            calendar.weekday_schedules[weekday] = schedule.id;
+
+                                            calendar.save().then(
                                                 function () { resolve(schedule); },
-                                                function (error) { reject(error); }
+                                                reject
                                             );
                                         },
                                         function (error) {
@@ -393,9 +402,12 @@ module.exports = (function() {
 
                                     schedule.save().then(
                                         function (schedule) {
-                                            calendar.reload(DataService).then(
+                                            calendar.relations.yearday_schedules[yearday] = schedule;
+                                            calendar.yearday_schedules[yearday] = schedule.id;
+
+                                            calendar.save().then(
                                                 function () { resolve(schedule); },
-                                                function (error) { reject(error); }
+                                                reject
                                             );
                                         },
                                         function (error) {
@@ -498,9 +510,10 @@ module.exports = (function() {
                                 return DataService.kind(service.FixtureKind).find(fixture_id);
                             })).then(
                                 function (responses) {
-                                    resolve(responses.map(function (response) {
+                                    schedule.relations.fixtures = responses.map(function (response) {
                                         return service.Fixture.new().load(response.data.data[service.FixtureKind]);
-                                    }));
+                                    });
+                                    resolve(schedule.relations.fixtures);
                                 },
                                 function (response) {
                                     reject(response.data.developer_message);

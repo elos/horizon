@@ -40,6 +40,10 @@
                         } ]
                     }
                 })
+                .when('/calendar', {
+                    templateUrl: './app/components/calendar/calendar.html',
+                    controller: 'CalendarController'
+                })
                 .when('/scheduling/:selector?/:index?', {
                     templateUrl: './app/components/scheduling/scheduling.html',
                     controller: 'SchedulingController',
@@ -86,19 +90,27 @@
     // --- }}}
 
   // --- Configure Controllers {{{
+  app.controller('CalendarController', require('./components/calendar/calendar_controller'));
   app.controller('HomeController', require('./components/home/home_controller'));
   app.controller('LoginController', require('./components/login/login_controller'));
   app.controller('SchedulerController', require('./components/scheduler/scheduler_controller'));
   app.controller('SchedulingController', require('./components/scheduling/scheduling_controller'));
   // --- }}}
 
+  // --- Configure Directives {{{
+  app.directive('calendarDay', require('./shared/directives/calendar_day/calendar_day_directive'));
+  // --- }}}
+
   // --- Configure Services {{{
   app.service('AccessService', require('./shared/services/access/access_service'));
+  app.service('CalendricalConstructionService', require('./shared/services/calendrical/calendrical_construction_service'));
   app.service('DataService', require('./shared/services/data/data_service'));
   app.service('HostService', require('./shared/services/host/host_service'));
   app.service('KeyService', require('./shared/services/key/key_service'));
+  app.service('LogService', require('./shared/services/log/log_service'));
   app.service('ModelsService', require('./shared/services/models/models_service'));
   app.service('RequestService', require('./shared/services/request/request_service'));
+  app.service('ScheduleService', require('./shared/services/schedule/schedule_service'));
   app.service('TimeService', require('./shared/services/time/time_service'));
   // --- }}}
 

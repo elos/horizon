@@ -4,7 +4,7 @@ module.exports = (function () {
         MonthSelector = 'monthly',
         YearlySelector = 'yearly';
 
-    SchedulingController = function ($scope, $location, $route, $routeParams, TimeService, ModelsService) {
+    SchedulingController = function ($scope, $location, $route, $routeParams, TimeService, ScheduleService, LogService) {
         var controller = this,
             i,
             monthName;
@@ -24,31 +24,7 @@ module.exports = (function () {
         // --- Handlers {{{
         $scope.handlers = {
             selectBase: function () {
-                ModelsService.session().then(
-                    function (session) {
-                        return session.owner();
-                    }
-                ).then(
-                    function (user) {
-                        return user.person();
-                    }
-                ).then(
-                    function (person) {
-                        return person.calendar();
-                    }
-                ).then(
-                    function (calendar) {
-                        return calendar.base_schedule();
-                    }
-                ).then(
-                    function (schedule) {
-                        $location.path("/scheduler/" + schedule.id);
-                    }
-                ).catch(
-                    function (error) {
-                        console.log(error);
-                    }
-                );
+                ScheduleService.base().then($scope.helpers.view, LogService.error);
             },
 
             selectWeekly: function () {
@@ -59,33 +35,8 @@ module.exports = (function () {
                 $route.updateParams({ selector: YearlySelector });
             },
 
-            selectWeekday: function (weekday) {
-                ModelsService.session().then(
-                    function (session) {
-                        return session.owner();
-                    }
-                ).then(
-                    function (user) {
-                        return user.person();
-                    }
-                ).then(
-                    function (person) {
-                        return person.calendar();
-                    }
-                ).then(
-                    function (calendar) {
-                        return calendar.weekday_schedule(weekday);
-                    }
-                ).then(
-                    function (schedule) {
-                        $location.path("/scheduler/" + schedule.id);
-
-                    }
-                ).catch(
-                    function (error) {
-                        console.log(error);
-                    }
-                );
+            selectWeekday: function (day) {
+                ScheduleService.weekday(day).then($scope.helpers.view, LogService.error);
             },
 
             selectMonth: function (month) {
@@ -95,33 +46,8 @@ module.exports = (function () {
                 });
             },
 
-            selectYearday: function (yearday) {
-                ModelsService.session().then(
-                    function (session) {
-                        return session.owner();
-                    }
-                ).then(
-                    function (user) {
-                        return user.person();
-                    }
-                ).then(
-                    function (person) {
-                        return person.calendar();
-                    }
-                ).then(
-                    function (calendar) {
-                        return calendar.yearday_schedule(yearday);
-                    }
-                ).then(
-                    function (schedule) {
-                        $location.path("/scheduler/" + schedule.id);
-
-                    }
-                ).catch(
-                    function (error) {
-                        console.log(error);
-                    }
-                );
+            selectYearday: function (day) {
+                ScheduleService.yearday(day).then($scope.helpers.view, LogService.error);
             },
 
             selectToday: function () {
@@ -142,6 +68,10 @@ module.exports = (function () {
                 }
 
                 return 'small';
+            },
+
+            view: function (schedule) {
+                $location.path("/scheduler/" + schedule.id);
             }
         };
         // --- }}}
@@ -278,7 +208,7 @@ module.exports = (function () {
     };
 
     SchedulingController.$inject = [ '$scope', '$location', '$route', '$routeParams',
-                                     'TimeService', 'ModelsService' ];
+                                     'TimeService', 'ScheduleService', 'LogService' ];
 
     return SchedulingController;
 }());

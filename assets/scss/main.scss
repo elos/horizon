@@ -6,9 +6,14 @@
 
 // Our components
 @import './components/login';
+@import './components/calendar';
 @import './components/scheduler';
 @import './components/scheduling';
 
+// Our directives
+@import './directives/calendar_day';
+
+// Basic Setup
 @import './shared/fonts';
 
 body {

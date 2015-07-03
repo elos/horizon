@@ -95,6 +95,14 @@ module.exports = (function() {
             11: 30,
             12: 31
         };
+
+        service.YeardayFor = function (date) {
+            return service.Yearday(date.getMonth() + 1, date.getDate());
+        };
+
+        service.WeekdayFor = function (date) {
+            return date.getDay();
+        };
     };
 
     return TimeService;

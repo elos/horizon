@@ -1,0 +1,40 @@
+<div class="calendar-day">
+    <div class="header">
+        <h2 class="title"> {{ states.schedule.title }} </h2>
+    </div>
+    <div class="content" id="schedule-scrollable">
+        <div class="schedule">
+            <!-- Time Boxes {{{ -->
+            <div class="time-box"
+                 data-ng-repeat="timeBox in states.schedule.timeBoxes"
+                >
+                <p class="time">
+                    {{timeBox.time}}
+                </p>
+            </div>
+            <!-- Time Boxes }}} -->
+
+            <!-- Labels {{{ -->
+            <div class="labels">
+                <div class="label"
+                     data-ng-repeat="label in states.schedule.labels"
+                     data-ng-click="label.click()"
+                    >
+                    <p class="name">
+                        {{ label.name }}
+                    </p>
+                </div>
+            </div>
+            <!-- Labels }}} -->
+
+            <!-- Elements {{{ -->
+            <div class="element"
+                 data-ng-repeat="element in states.schedule.elements"
+                 data-ng-click="element.click()"
+                 data-ng-style="element.style">
+                <p class="name"> {{ element.name }} </p>
+            </div>
+            <!-- Elements }}} -->
+        </div>
+    </div>
+</div>

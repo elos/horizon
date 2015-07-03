@@ -1,0 +1,99 @@
+@import '../shared/colors'; // $white-off, $black
+@import '../shared/fonts'; // $avenir-light-stack
+@import '../mixins/card'; // card
+@import '../mixins/error'; // error
+@import '../mixins/inputs'; // text-field
+// todo weed these imports
+
+// todo add to global scss lint shit
+// scss-lint:disable SelectorDepth, NestingDepth
+
+.calendar-day {
+  @include card(0, 100%);
+
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 800px;
+  width: 58%;
+
+  .header {
+    background-color: $grey-lighter;
+    border: 1px solid $grey;
+    height: 34px;
+    line-height: 34px;
+    margin-left: -1px;
+    margin-top: -1px;
+    text-align: center;
+    width: 100%;
+
+    // scss-lint:disable NestingDepth
+    .title {
+      color: $black;
+      font-size: 12px;
+    }
+  }
+
+  .content {
+    max-height: 800px;
+    overflow-x: hide;
+    overflow-y: scroll;
+
+    .schedule {
+      position: relative;
+
+      .time-box {
+        border-bottom: 1px dashed $grey-fade;
+        height: 80px;
+
+        .time {
+          color: $grey-fade;
+          font-size: 10px;
+          left: 2px;
+          position: relative;
+          top: 68px;
+        }
+      }
+
+      .labels {
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+
+        .label {
+          background-color: $turquoise;
+          border: 1px solid $grey;
+          border-radius: 4px;
+          cursor: pointer;
+          float: left;
+          font-size: 12px;
+          margin: 4px;
+          padding: 6px;
+
+          .name {
+            color: $white;
+            text-align: center;
+          }
+        }
+
+      }
+
+      .element {
+        background-color: $white-grey;
+        border: 1px solid $grey;
+        cursor: pointer;
+        margin-left: -1px;
+        position: absolute;
+        width: calc(100% - 2px);
+
+        .name {
+          color: $eleen;
+          font-size: 14px;
+          left: 10px;
+          position: relative;
+          top: 10px;
+        }
+      }
+    }
+  }
+}
