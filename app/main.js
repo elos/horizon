@@ -44,6 +44,10 @@
                     templateUrl: './app/components/calendar/calendar.html',
                     controller: 'CalendarController'
                 })
+                .when('/data', {
+                    templateUrl: './app/components/data/data.html',
+                    controller: 'DataController'
+                })
                 .when('/scheduling/:selector?/:index?', {
                     templateUrl: './app/components/scheduling/scheduling.html',
                     controller: 'SchedulingController',
@@ -91,6 +95,7 @@
 
   // --- Configure Controllers {{{
   app.controller('CalendarController', require('./components/calendar/calendar_controller'));
+  app.controller('DataController', require('./components/data/data_controller'));
   app.controller('HomeController', require('./components/home/home_controller'));
   app.controller('LoginController', require('./components/login/login_controller'));
   app.controller('SchedulerController', require('./components/scheduler/scheduler_controller'));
