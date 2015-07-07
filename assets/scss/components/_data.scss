@@ -1,0 +1,31 @@
+@import '../shared/colors'; // $white-off, $black
+@import '../shared/fonts'; // $avenir-light-stack
+@import '../mixins/flex'; // flexbox
+
+.data {
+  @include flexbox;
+  @include flex-direction(column);
+  @include justify-content(flex-start);
+  @include align-items(center);
+
+  .header {
+    background-color: $white-off;
+    height: $login-header-height;
+    line-height: $login-header-height;
+
+    .elos {
+      color: $black;
+      font-family: $avenir-light-stack;
+      font-size: 14px;
+      height: inherit;
+      letter-spacing: 1px;
+      line-height: inherit;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  .graph {
+    width: 90%;
+  }
+}

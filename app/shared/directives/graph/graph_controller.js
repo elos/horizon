@@ -25,7 +25,10 @@ module.exports = (function () {
             title: $scope.title,
             data: $scope.data,
             x_accessor: $scope.xAccessor,
-            y_accessor: $scope.yAccessor
+            y_accessor: $scope.yAccessor,
+            full_width: true,
+            x_extended_ticks: true,
+            height: 300
         });
     };
 

@@ -8,11 +8,13 @@
 // Our components
 @import './components/login';
 @import './components/calendar';
+@import './components/data';
 @import './components/scheduler';
 @import './components/scheduling';
 
 // Our directives
 @import './directives/calendar_day';
+@import './directives/query_panel';
 
 // Basic Setup
 @import './shared/fonts';

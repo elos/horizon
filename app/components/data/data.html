@@ -6,6 +6,7 @@
     <!-- }}} -->
 
     <div id="viz"
+         class="graph"
          data-graph
          title="options.title"
          data-data="options.data"
@@ -13,4 +14,8 @@
          data-y_accessor="options.y_accessor">
     </div>
 
+    <div data-query-panel
+         data-query="handlers.applyQuery(options)"
+         data-error="handlers.queryError(error)"
+         data-valid-tags="states.validTags"></div>
 </section>

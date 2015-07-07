@@ -1,0 +1,80 @@
+<section class="query-panel">
+    <!-- Date Selection {{{ -->
+    <div class="date-selection">
+        <h1 class="title"> Select date range: </h1>
+        <table class="form">
+            <tr class="row">
+                <td class="label"> Start: </td>
+                <td class="input">
+                    <input type="date" class="start" />
+                </td>
+            </tr>
+            <tr class="row">
+                <td class="label"> End: </td>
+                <td class="input">
+                    <input type="date" class="end" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- Date Selection }}} -->
+
+    <!-- Filter Selection {{{ -->
+    <div class="filter-selection">
+        <div class="filter-input-group">
+            <input type="text"
+                   placeholder="Add a filter"
+                   class="filter"
+                   data-ng-model="states.models.filter"
+                   data-ng-keyup="handlers.filterKeyUp($event)"
+                   />
+            <img class="add-filter"
+                 src="./assets/img/buttons/plus-circle-green.png"
+                 alt="+"
+                 data-ng-click="handlers.addTag()"
+                />
+        </div>
+        <div class="filter-tag-group">
+            <div data-ng-repeat="tag in states.tags"
+                 class="filter">
+                <div class="label"> {{tag.name}} </div>
+                <img src="./assets/img/buttons/x-circle-red.png"
+                     alt="x"
+                     class="remove-button"
+                     data-ng-click="handlers.removeTag($index)"
+                    />
+            </div>
+        </div>
+    </div>
+    <!-- Filter Selection }}} -->
+
+    <!-- Aggregate Selection {{{ -->
+    <div class="aggregate-selection">
+        <h1 class="title"> Aggregate by: </h1>
+        <table class="form">
+            <tr class="row">
+                <td class="label">
+                    Period:
+                </td>
+                <td class="input">
+                    <select name="period" class="select">
+                        <option value="day"> Day </option>
+                        <option value="week"> Week </option>
+                    </select>
+                </td>
+            </tr>
+            <tr class="row">
+                <td class="label">
+                    Function:
+                </td>
+                <td class="input">
+                    <select name="function" class="select">
+                        <option value="sum"> Sum </option>
+                        <option value="average"> Average </option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- Aggregate Selection }}} -->
+</section>

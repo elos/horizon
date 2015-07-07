@@ -1,0 +1,121 @@
+@import '../mixins/card'; // card
+@import '../mixins/flex'; // flex
+@import '../mixins/inputs'; // text-field
+
+// scss-lint:disable SelectorDepth, NestingDepth
+.query-panel {
+  @include card($padding: 13px, $content-width: 100%);
+  @include flexbox;
+  @include flex-direction(row);
+  @include justify-content(stretch);
+  @include align-items;
+
+  width: 80%;
+
+  .date-selection,
+  .aggregate-selection {
+    padding: 20px;
+
+    .title {
+      color: $grey;
+      font-family: AvenirNext-Regular;
+      font-size: 14px;
+      padding-bottom: 10px;
+    }
+
+    .form {
+      .row {
+        padding: 4px;
+
+        .label {
+          font-family: $avenir-medium-stack;
+          font-size: 12px;
+          padding: 8px;
+          padding-right: 2px;
+          text-align: right;
+        }
+
+        .input {
+          padding: 6px;
+
+          .start,
+          .end {
+            @include text-field($font-size: 14px, $padding: 10px, $margin-top: 0);
+          }
+
+          .select {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+
+  .date-selection {
+    border-right: 1px solid $grey-light;
+    min-width: 200px;
+    padding: 20px;
+  }
+
+  .filter-selection {
+    border-right: 1px solid $grey-light;
+    padding: 20px;
+    width: 520px;
+
+    .filter-input-group {
+      border-bottom: 1px solid $grey-light;
+      padding-bottom: 8px;
+
+      .filter {
+        @include text-field($font-size: 14px, $padding: 10px, $margin-top: 0);
+
+        width: calc(100% - 20px - 42px);
+      }
+
+      .add-filter {
+        height: 32px;
+        margin-bottom: -12px;
+        margin-top: 3px;
+        width: 32px;
+      }
+    }
+
+    .filter-tag-group {
+      @include flexbox;
+      @include flex-direction(row);
+
+      flex-wrap: wrap;
+      padding-top: 8px;
+
+      .filter {
+        background: $white-off;
+        border: 1px solid $grey;
+        border-radius: 8px;
+        margin-bottom: 4px;
+        margin-right: 4px;
+        padding: 4px;
+
+        .label {
+          background-color: $turquoise;
+          border: 1px solid $grey;
+          border-radius: 4px;
+          color: $black;
+          float: left;
+          font-size: 12px;
+          margin-right: 4px;
+          padding: 6px 28px;
+          text-align: center;
+        }
+
+        .remove-button {
+          cursor: pointer;
+          height: 18px;
+          margin-top: 4px;
+          width: 18px;
+        }
+      }
+
+
+    }
+  }
+}
