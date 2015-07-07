@@ -10,7 +10,7 @@ module.exports = (function () {
         };
 
         service.error = function (errorOrMessage) {
-            $log.info(errorOrMessage);
+            $log.error(errorOrMessage);
         };
     };
 
