@@ -11,6 +11,7 @@ module.exports = (function() {
         Array: 'array',
         Map: 'map',
         Integer: 'integer',
+        Float: 'float',
         Boolean: 'boolean'
     };
     // --- }}}
@@ -31,6 +32,7 @@ module.exports = (function() {
     Transforms.Unmarshal[Types.Array]   = IdentityTransformation;
     Transforms.Unmarshal[Types.Map]     = IdentityTransformation;
     Transforms.Unmarshal[Types.Integer] = IdentityTransformation;
+    Transforms.Unmarshal[Types.Float]   = IdentityTransformation;
     Transforms.Unmarshal[Types.Boolean] = IdentityTransformation;
 
     // register marshal transforms
@@ -40,6 +42,7 @@ module.exports = (function() {
     Transforms.Marshal[Types.Array]     = IdentityTransformation;
     Transforms.Marshal[Types.Map]       = IdentityTransformation;
     Transforms.Marshal[Types.Integer]   = IdentityTransformation;
+    Transforms.Marshal[Types.Float]     = IdentityTransformation;
     Transforms.Marshal[Types.Boolean]   = IdentityTransformation;
     // --- }}}
 
@@ -51,7 +54,8 @@ module.exports = (function() {
         'person': 'persons',
         'schedule': 'schedules',
         'session': 'sessions',
-        'user': 'users'
+        'user': 'users',
+        'datum': 'data'
     };
     // --- }}}
 

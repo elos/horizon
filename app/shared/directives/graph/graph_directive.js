@@ -11,10 +11,7 @@ module.exports = (function () {
             controller: GraphController,
 
             scope: {
-                title: '=',
-                data: '=',
-                xAccessor: '=',
-                yAccessor: '='
+                show: '='
             }
         };
     };

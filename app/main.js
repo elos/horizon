@@ -48,6 +48,10 @@
                     templateUrl: './app/components/data/data.html',
                     controller: 'DataController'
                 })
+                .when('/data/input', {
+                    templateUrl: './app/components/data_input/data_input.html',
+                    controller: 'DataInputController'
+                })
                 .when('/scheduling/:selector?/:index?', {
                     templateUrl: './app/components/scheduling/scheduling.html',
                     controller: 'SchedulingController',
@@ -96,6 +100,7 @@
   // --- Configure Controllers {{{
   app.controller('CalendarController', require('./components/calendar/calendar_controller'));
   app.controller('DataController', require('./components/data/data_controller'));
+  app.controller('DataInputController', require('./components/data_input/data_input_controller'));
   app.controller('HomeController', require('./components/home/home_controller'));
   app.controller('LoginController', require('./components/login/login_controller'));
   app.controller('SchedulerController', require('./components/scheduler/scheduler_controller'));
@@ -112,6 +117,7 @@
   app.service('AccessService', require('./shared/services/access/access_service'));
   app.service('CalendricalConstructionService', require('./shared/services/calendrical/calendrical_construction_service'));
   app.service('DataService', require('./shared/services/data/data_service'));
+  app.service('DatumService', require('./shared/services/datum/datum_service'));
   app.service('HostService', require('./shared/services/host/host_service'));
   app.service('KeyService', require('./shared/services/key/key_service'));
   app.service('LogService', require('./shared/services/log/log_service'));

@@ -103,6 +103,16 @@ module.exports = (function() {
         service.WeekdayFor = function (date) {
             return date.getDay();
         };
+
+        service.DayEquivalent = function (d1, d2) {
+            return d1.getYear() === d2.getYear() &&
+                d1.getMonth() === d2.getMonth() &&
+                d1.getDate() === d2.getDate();
+        };
+
+        service.Base = function (date) {
+            return new Date(date.getYear(), date.getMonth(), date.getDate());
+        };
     };
 
     return TimeService;

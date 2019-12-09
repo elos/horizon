@@ -1,0 +1,191 @@
+@import '../shared/colors'; // $white-off, $black
+@import '../shared/fonts'; // $avenir-light-stack
+@import '../mixins/card'; // card
+@import '../mixins/flex'; // flexbox
+@import '../mixins/inputs'; // flexbox
+
+// scss-lint:disable SelectorDepth, NestingDepth
+
+.data-input {
+  .header {
+    background-color: $white-off;
+    height: $login-header-height;
+    line-height: $login-header-height;
+
+    .elos {
+      color: $black;
+      font-family: $avenir-light-stack;
+      font-size: 14px;
+      height: inherit;
+      letter-spacing: 1px;
+      line-height: inherit;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  .content {
+    @include flexbox;
+    @include flex-direction(column);
+    @include justify-content(center);
+    @include align-items(center);
+
+    height: calc(100vh - 50px);
+
+    .input-panel {
+      @include card($padding: 20px, $content-width: 100%);
+
+      margin-top: -50px;
+
+      .title {
+        color: $grey;
+        font-size: 14px;
+        line-height: 24px;
+        margin-top: 10px;
+      }
+
+      // --- Datum Group {{{
+      .datum-group {
+        border-bottom: 1px solid $grey-light;
+        padding: 10px;
+
+        .form {
+          margin-left: 10%;
+          width: 80%;
+
+          .row {
+
+            .label {
+              font-size: 12px;
+              padding: 8px;
+              padding-right: 2px;
+              text-align: right;
+            }
+
+            .input {
+              padding: 6px;
+
+              .value,
+              .units {
+                @include text-field($font-size: 12px, $padding: 6px, $margin-top: 0);
+                border-radius: 4px;
+              }
+            }
+          }
+        }
+      }
+      // --- }}}
+
+      // --- Tags Group {{{
+      .tags-group {
+        border-bottom: 1px solid $grey-light;
+        min-height: 60px;
+        padding: 10px;
+
+        .input-group {
+          .add-tag-input {
+            @include text-field($font-size: 12px, $padding: 6px, $margin-top: 0);
+            border-radius: 4px;
+            width: calc(100% - 44px);
+          }
+
+          .plus-button {
+            cursor: pointer;
+            height: 24px;
+            margin-bottom: -8px;
+          }
+        }
+
+        .tags {
+          @include flexbox;
+          @include flex-direction(row);
+          @include align-items(flex-start);
+
+          .tag {
+            background: $white-off;
+            border: 1px solid $grey;
+            border-radius: 8px;
+            margin-right: 4px;
+            margin-top: 4px;
+            padding: 4px;
+
+            .label {
+              background-color: $turquoise;
+              border: 1px solid $grey;
+              border-radius: 4px;
+              color: $black;
+              float: left;
+              font-size: 12px;
+              margin-right: 4px;
+              padding: 6px 28px;
+              text-align: center;
+            }
+
+            .remove-button {
+              cursor: pointer;
+              height: 18px;
+              margin-top: 4px;
+              width: 18px;
+            }
+          }
+        }
+      }
+      // --- }}}
+
+      // --- Extra Group {{{
+      .extra-group {
+        border-bottom: 1px solid $grey-light;
+        padding: 10px;
+
+        .form {
+          width: 100%;
+
+          .row {
+
+            .label {
+              font-size: 12px;
+              max-width: 30px;
+              padding: 8px;
+              padding-right: 2px;
+              text-align: right;
+            }
+
+            .input {
+              padding: 6px;
+
+              .time,
+              .date,
+              .name {
+                @include text-field($font-size: 12px, $padding: 6px, $margin-top: 0);
+                border-radius: 4px;
+              }
+            }
+          }
+        }
+      }
+      // --- }}}
+
+      // --- Button Group {{{
+      .button-group {
+        @include flexbox;
+        @include flex-direction(row);
+        @include justify-content(space-between);
+
+        padding-top: 10px;
+
+        .exit-button {
+          cursor: pointer;
+          height: 30px;
+          margin-left: 10px;
+        }
+
+        .save-button {
+          cursor: pointer;
+          height: 30px;
+          margin-right: 10px;
+        }
+      }
+
+    }
+  }
+}

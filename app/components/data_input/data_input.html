@@ -1,0 +1,106 @@
+<section class="data-input">
+    <!-- Header {{{ -->
+    <div class="header">
+        <h1 class="elos"> ELOS </h1>
+    </div>
+    <!-- }}} -->
+
+    <div class="content">
+        <div class="input-panel">
+            <h1 class="title"> New data input: </h1>
+            <div class="datum-group">
+                <table class="form">
+                    <tr class="row">
+                        <td class="label">
+                            Value:
+                        </td>
+                        <td class="input">
+                            <input type="number"
+                                   placeholder="N"
+                                   class="value"
+                                   data-autofocus="true"
+                                   data-ng-model="states.models.value"/>
+                        </td>
+                        <td class="label">
+                            Units:
+                        </td>
+                        <td class="input">
+                            <input type="text"
+                                   placeholder="u"
+                                   class="units"
+                                   data-ng-model="states.models.units"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="tags-group">
+                <div class="input-group">
+                    <input type="text"
+                           placeholder="Add a tag"
+                           class="add-tag-input"
+                           data-ng-model="states.models.tagAdding"/>
+                    <img src="./assets/img/buttons/plus-circle-green.png"
+                         alt="+"
+                         class="plus-button"
+                         data-ng-click="handlers.addTag(states.models.tagAdding)"/>
+                </div>
+
+                <div class="tags">
+                    <div data-ng-repeat="tag in states.models.tags"
+                         class="tag">
+                        <div class="label"> {{tag}} </div>
+                        <img src="./assets/img/buttons/x-circle-red.png"
+                             alt="x"
+                             class="remove-button" />
+                    </div>
+                </div>
+            </div>
+            <div class="extra-group">
+                <table class="form">
+                    <tr class="row">
+                        <td class="label">
+                            Date:
+                        </td>
+                        <td class="input">
+                            <input type="date"
+                                   placeholder="N"
+                                   class="date"
+                                   data-ng-model="states.models.created_at"/>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="label">
+                            Time:
+                        </td>
+                        <td class="input">
+                            <input type="time"
+                                   placeholder="N"
+                                   class="time"
+                                   data-ng-model="states.models.created_at" />
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="label">
+                            Name:
+                        </td>
+                        <td class="input">
+                            <input type="text"
+                                   placeholder="N"
+                                   class="name"
+                                   data-ng-model="states.models.name"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="button-group">
+                <img class="exit-button"
+                     src="./assets/img/buttons/x-circle-red.png"
+                     alt="x" />
+                <img class="save-button"
+                     src="./assets/img/buttons/save-round-green.png"
+                     alt="Save"
+                     data-ng-click="handlers.submit()" />
+            </div>
+        </div>
+    </div>
+</section>

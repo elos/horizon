@@ -14,22 +14,15 @@ module.exports = (function () {
         //   x_accessor: string
         //   y_accessor: string
         // }
+        $scope.show = function (options) {
+            options.full_width = options.full_width || true;
+            options.x_extended_ticks = options.x_extended_ticks || true;
+            options.height = options.height || 300;
+            options.animate_on_load = options.animate_on_load || true;
 
-        function init(options) {
-            console.log(options);
-            LogService.info("Initializing graph");
+            LogService.info(options);
             MG.data_graphic(options);
-        }
-
-        init({
-            title: $scope.title,
-            data: $scope.data,
-            x_accessor: $scope.xAccessor,
-            y_accessor: $scope.yAccessor,
-            full_width: true,
-            x_extended_ticks: true,
-            height: 300
-        });
+        };
     };
 
     GraphController.$inject = [ '$scope', 'LogService' ];

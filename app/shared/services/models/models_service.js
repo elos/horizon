@@ -13,6 +13,7 @@ module.exports = (function() {
         service.PersonKind = 'person';
         service.ScheduleKind = 'schedule';
         service.UserKind = 'user';
+        service.DatumKind = 'datum';
 
         // --- User {{{
         service.User = {
@@ -633,6 +634,67 @@ module.exports = (function() {
 
                     toJSON: function () {
                         return DataService.marshal(this, service.Fixture.TypeMap);
+                    }
+                };
+            }
+        };
+        // --- }}}
+
+        // --- New Datum {{{
+        service.Datum = {
+            TypeMap: {
+                id: DataService.Types.String,
+                created_at: DataService.Types.Date,
+                value: DataService.Types.Float,
+                unit: DataService.Types.String,
+                tags: DataService.Types.Array,
+                context: DataService.Types.String,
+                owner_id: DataService.Types.String,
+                person_id: DataService.Types.String,
+                event_id: DataService.Types.String
+            },
+
+            new: function () {
+                return {
+                    kind: service.DatumKind,
+
+                    id: undefined,
+                    created_at: new Date(),
+                    value: undefined,
+                    unit: undefined,
+                    tags: [],
+                    context: undefined,
+                    owner_id: undefined,
+                    person_id: undefined,
+                    event_id: undefined,
+
+                    relations: {},
+
+                    save: function () {
+                        var datum = this;
+
+                        return $q(function (resolve, reject) {
+                            DataService.kind(datum.kind).save(datum.toJSON()).then(
+                                function (response) {
+                                    datum.load(response.data.data[datum.kind]);
+                                    resolve(datum);
+                                },
+                                function (response) {
+                                    console.log(response);
+                                    reject(response.data.data.developer_message);
+                                }
+                            );
+                        });
+                    },
+
+                    load: function (payload) {
+                        DataService.unmarshal(this, service.Datum.TypeMap, payload);
+                        this.relations = {};
+                        return this;
+                    },
+
+                    toJSON: function () {
+                        return DataService.marshal(this, service.Datum.TypeMap);
                     }
                 };
             }
